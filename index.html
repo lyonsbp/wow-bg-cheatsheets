@@ -217,6 +217,36 @@ header .sub{font-size:.72rem;color:#887755;margin-top:1px}
 }
 .tip-item::before{content:'›';position:absolute;left:0;color:#7c5a1e}
 
+/* Editable tips */
+.tip-edit{
+  display:flex;align-items:flex-start;gap:4px;margin-bottom:5px;
+  position:relative;
+}
+.tip-edit-text{
+  flex:1;background:#0a0e16;border:1px solid #2a2a3a;border-radius:3px;
+  color:#c8b982;font-size:.68rem;padding:4px 6px;line-height:1.4;
+  resize:vertical;min-height:28px;font-family:inherit;
+}
+.tip-edit-text:focus{border-color:#5a4a20;outline:none}
+.tip-edit-acts{
+  display:flex;flex-direction:column;gap:2px;flex-shrink:0;
+}
+.tip-act{
+  width:18px;height:18px;border:1px solid #2a2a3a;border-radius:2px;
+  background:#0a0e16;color:#6a6a7a;font-size:.6rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .1s;
+  padding:0;
+}
+.tip-act:hover{background:#1e2535;color:#ffd200;border-color:#5a4a20}
+.tip-act.danger:hover{color:#dd4444;border-color:#5a2020}
+.tip-add-btn{
+  display:block;width:100%;padding:4px;margin-top:4px;
+  background:#0a0e16;border:1px dashed #2a2a3a;border-radius:3px;
+  color:#4a5a6a;font-size:.62rem;cursor:pointer;text-align:center;
+  transition:all .12s;
+}
+.tip-add-btn:hover{border-color:#5a4a20;color:#aa8844;background:#141820}
+
 .leg{margin-top:14px}
 .leg-hd{font-size:.6rem;color:#6a5a40;text-transform:uppercase;letter-spacing:1px;
         margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid #1a1a25}
@@ -1007,8 +1037,63 @@ function renderBG(id){
   applyLayers();
   if(editMode) document.getElementById('editBgName').textContent = bg.name;
 
-  document.getElementById('tipsList').innerHTML=
-    bg.tips.map(t=>`<div class="tip-item">${t}</div>`).join('');
+  renderTips();
+}
+
+function renderTips(){
+  const el = document.getElementById('tipsList');
+  if(!curBG) return;
+  const bg = BGS[curBG];
+
+  if(!editMode){
+    el.innerHTML = bg.tips.map(t => `<div class="tip-item">${t}</div>`).join('');
+    return;
+  }
+
+  el.innerHTML = bg.tips.map((t, i) => `
+    <div class="tip-edit" data-tidx="${i}">
+      <textarea class="tip-edit-text" rows="2" data-tidx="${i}">${t}</textarea>
+      <div class="tip-edit-acts">
+        <button class="tip-act" title="Move up" onclick="tipMove(${i},-1)">▲</button>
+        <button class="tip-act" title="Move down" onclick="tipMove(${i},1)">▼</button>
+        <button class="tip-act danger" title="Delete" onclick="tipDelete(${i})">✕</button>
+      </div>
+    </div>
+  `).join('') + '<button class="tip-add-btn" onclick="tipAdd()">+ Add Tip</button>';
+
+  // Wire up blur to save text edits
+  el.querySelectorAll('.tip-edit-text').forEach(ta => {
+    ta.addEventListener('blur', () => {
+      const idx = parseInt(ta.dataset.tidx);
+      bg.tips[idx] = ta.value;
+      saveData();
+    });
+  });
+}
+
+function tipMove(idx, dir){
+  const bg = BGS[curBG];
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= bg.tips.length) return;
+  [bg.tips[idx], bg.tips[newIdx]] = [bg.tips[newIdx], bg.tips[idx]];
+  saveData();
+  renderTips();
+}
+
+function tipDelete(idx){
+  const bg = BGS[curBG];
+  bg.tips.splice(idx, 1);
+  saveData();
+  renderTips();
+}
+
+function tipAdd(){
+  const bg = BGS[curBG];
+  const text = prompt('New strategy tip:');
+  if(!text) return;
+  bg.tips.push(text);
+  saveData();
+  renderTips();
 }
 
 function onMapLoad(){
@@ -1087,7 +1172,8 @@ function saveData(){
       graveyards: bg.graveyards,
       powerups: bg.powerups,
       routes: bg.routes,
-      objectives: bg.objectives
+      objectives: bg.objectives,
+      tips: bg.tips
     };
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
@@ -1104,6 +1190,7 @@ function loadData(){
       if(saved.powerups)   BGS[id].powerups = saved.powerups;
       if(saved.routes)     BGS[id].routes = saved.routes;
       if(saved.objectives) BGS[id].objectives = saved.objectives;
+      if(saved.tips)       BGS[id].tips = saved.tips;
     }
   } catch(e){ console.warn('Failed to load saved data:', e); }
 }
@@ -1115,12 +1202,13 @@ function exportJSON(){
     graveyards: bg.graveyards,
     powerups: bg.powerups,
     routes: bg.routes,
-    objectives: bg.objectives
+    objectives: bg.objectives,
+    tips: bg.tips
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = curBG + '-markers.json';
+  a.download = curBG + '-data.json';
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -1141,6 +1229,7 @@ function importJSON(){
         if(data.powerups)   bg.powerups = data.powerups;
         if(data.routes)     bg.routes = data.routes;
         if(data.objectives) bg.objectives = data.objectives;
+        if(data.tips)       bg.tips = data.tips;
         saveData();
         renderBG(curBG);
       } catch(e){ alert('Invalid JSON file'); }
@@ -1152,12 +1241,13 @@ function importJSON(){
 
 function resetBG(){
   if(!curBG) return;
-  if(!confirm('Reset ' + BGS[curBG].name + ' markers to defaults?')) return;
+  if(!confirm('Reset ' + BGS[curBG].name + ' to defaults?')) return;
   const def = BGS_DEFAULT[curBG];
   BGS[curBG].graveyards = JSON.parse(JSON.stringify(def.graveyards));
   BGS[curBG].powerups   = JSON.parse(JSON.stringify(def.powerups));
   BGS[curBG].routes     = JSON.parse(JSON.stringify(def.routes));
   BGS[curBG].objectives = JSON.parse(JSON.stringify(def.objectives));
+  BGS[curBG].tips       = JSON.parse(JSON.stringify(def.tips));
   saveData();
   renderBG(curBG);
 }
@@ -1177,6 +1267,7 @@ function toggleEdit(){
   document.getElementById('mapBox').classList.toggle('edit-active', editMode);
   if(curBG) document.getElementById('editBgName').textContent = BGS[curBG].name;
   closeAddDlg();
+  renderTips();
 }
 
 // ── SVG coordinate helpers ──
