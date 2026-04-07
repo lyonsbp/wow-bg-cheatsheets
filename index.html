@@ -286,6 +286,7 @@ header .sub{font-size:.72rem;color:#887755;margin-top:1px}
       <span class="ltog gy on"  id="tog-gy"  onclick="toggleLayer('gy')"><span class="ldot"></span>Graveyards</span>
       <span class="ltog buf on" id="tog-buf" onclick="toggleLayer('buf')"><span class="ldot"></span>Power-ups</span>
       <span class="ltog rte on" id="tog-rte" onclick="toggleLayer('rte')"><span class="ldot"></span>Routes</span>
+      <span class="ltog rte" id="tog-squig" onclick="toggleSquiggly()" title="MS Paint style routes"><span class="ldot"></span>Squiggly</span>
       <span class="ltog obj on" id="tog-obj" onclick="toggleLayer('obj')"><span class="ldot"></span>Objectives</span>
       <span style="margin-left:auto"></span>
       <span class="ltog edt" id="tog-edit" onclick="toggleEdit()"><span class="ldot"></span>Edit Mode</span>
@@ -886,6 +887,49 @@ function objColor(t,f){
 // ═══════════════════════════════════════════════
 function pts(arr){return arr.map(p=>p[0]+','+p[1]).join(' ')}
 
+let squigglyMode = false;
+// Seeded RNG so squiggles are stable per-render (not random every frame)
+function seededRng(seed){
+  return function(){
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+}
+
+function squigglyPath(waypoints, seed){
+  const rng = seededRng(seed);
+  const wobble = 1.4;    // max perpendicular offset
+  const segLen = 2.5;    // distance between wobble points
+  let d = `M ${waypoints[0][0]} ${waypoints[0][1]}`;
+
+  for(let i = 0; i < waypoints.length - 1; i++){
+    const ax = waypoints[i][0], ay = waypoints[i][1];
+    const bx = waypoints[i+1][0], by = waypoints[i+1][1];
+    const dx = bx - ax, dy = by - ay;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    if(len < 0.1){ continue; }
+    const nx = -dy/len, ny = dx/len; // perpendicular normal
+    const steps = Math.max(2, Math.ceil(len / segLen));
+
+    for(let s = 1; s <= steps; s++){
+      const t = s / steps;
+      const px = ax + dx * t;
+      const py = ay + dy * t;
+      // No wobble on the very last point of last segment (keep endpoint clean)
+      const isEnd = (s === steps && i === waypoints.length - 2);
+      const w = isEnd ? 0 : (rng() - 0.5) * 2 * wobble;
+      d += ` L ${(px + nx * w).toFixed(2)} ${(py + ny * w).toFixed(2)}`;
+    }
+  }
+  return d;
+}
+
+function toggleSquiggly(){
+  squigglyMode = !squigglyMode;
+  document.getElementById('tog-squig').classList.toggle('on', squigglyMode);
+  if(curBG) renderBG(curBG);
+}
+
 function mkGY(g, idx){
   const c=gyColor(g.f||'neutral');
   return `<g class="mk lgy" data-layer="graveyards" data-idx="${idx}" transform="translate(${g.x},${g.y})">
@@ -912,6 +956,22 @@ function mkRoute(r, idx){
       cx="${p[0]}" cy="${p[1]}" r="1.8"
       fill="${r.c}" stroke="#fff" stroke-width=".4" opacity=".85"/>`
   ).join('');
+
+  if(squigglyMode){
+    const seed = idx * 7919 + 42;
+    const d = squigglyPath(r.pts, seed);
+    return `<g class="lrte" data-ridx="${idx}">
+      <path class="rte-glow" d="${d}" fill="none" stroke="${r.c}"
+        stroke-width="3" opacity=".15"/>
+      <path class="rte-line" d="${d}" fill="none" stroke="${r.c}"
+        stroke-width="1.1" opacity=".85" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${pts(r.pts)}" fill="none" stroke="transparent"
+        stroke-width="4" class="rte-hit" data-ridx="${idx}"/>
+      <title>${r.n}</title>
+      ${wps}
+    </g>`;
+  }
+
   return `<g class="lrte" data-ridx="${idx}">
     <polyline class="rte-glow" points="${pts(r.pts)}" fill="none" stroke="${r.c}"
       stroke-width="2.25" opacity=".12"/>
