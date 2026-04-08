@@ -1,0 +1,43 @@
+import { objColor } from '../../utils/colors';
+
+function ObjShape({ type, faction, color }) {
+  if (type === 'zone') {
+    return <circle r="5" fill={color} opacity=".12" stroke={color} strokeWidth=".4" strokeDasharray="1.2,1" />;
+  }
+  if (type === 'flag') {
+    return (
+      <>
+        <line x1="0" y1="-3.5" x2="0" y2="3" stroke={color} strokeWidth=".6" />
+        <polygon points="0,-3.5 3,-2 0,-.5" fill={color} opacity=".9" />
+      </>
+    );
+  }
+  if (type === 'base') {
+    return (
+      <>
+        <rect x="-3" y="-3" width="6" height="6" rx=".5" fill={color} opacity=".8" stroke="#000a" strokeWidth=".35" />
+        <text x="0" y="1" textAnchor="middle" fontSize="3" fill="#fff" opacity=".9">⚑</text>
+      </>
+    );
+  }
+  // star (node / tower / orb)
+  const pts5 = '0,-3.2 .74,-.9 3.1,-.9 1.2,.7 1.9,2.9 0,1.6 -1.9,2.9 -1.2,.7 -3.1,-.9 -.74,-.9';
+  return <polygon points={pts5} fill={color} stroke="#000a" strokeWidth=".3" opacity=".88" />;
+}
+
+export default function Objective({ data, index, onDragStart, onContextMenu }) {
+  const c = objColor(data.t, data.f || 'neutral');
+  return (
+    <g
+      className="mk lobj"
+      data-layer="objectives"
+      data-idx={index}
+      transform={`translate(${data.x},${data.y})`}
+      onMouseDown={(e) => onDragStart?.(e, 'objectives', index)}
+      onContextMenu={(e) => onContextMenu?.(e, 'objectives', index)}
+    >
+      <title>{data.n}</title>
+      <ObjShape type={data.t} faction={data.f} color={c} />
+    </g>
+  );
+}

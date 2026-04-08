@@ -4,22 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Interactive single-page web app for World of Warcraft battleground strategy. Zero dependencies, no build tools — everything lives in `index.html` (HTML + CSS + JS).
+Interactive web app for World of Warcraft battleground strategy — maps, markers, routes, and tips for all 13 battlegrounds.
 
-## Running
+## Commands
 
-Open `index.html` in any modern browser. No build step, no install, no server required.
+```bash
+npm run dev      # Start Vite dev server (http://localhost:5173)
+npm run build    # Production build to dist/
+npm run preview  # Preview production build
+```
 
 There are no tests, linters, or CI pipelines.
 
 ## Architecture
 
-The entire app is a single `index.html` file (~1,760 lines) organized into these sections:
+React 18 app built with Vite. No CSS modules — all styles in a single `App.css` with well-namespaced class prefixes.
 
-### Embedded CSS (~lines 8–264)
-Dark fantasy theme. Key class prefixes: `.mk` (markers), `.lgy`/`.lbuf`/`.lrte`/`.lobj` (layer visibility), `.rte` (routes).
+### State Management (`src/context/BattlegroundContext.jsx`)
+React Context + `useReducer`. Single source of truth for:
+- `bgs` — full battleground data object (13 BGs)
+- `curBG` — selected BG id
+- `layers` — `{gy, buf, rte, obj}` visibility booleans
+- `editMode`, `squigglyMode`, `zoomScale`
 
-### Data Layer — `BGS` object (~lines 346–859)
+All data mutations go through dispatch actions. `saveData()` to localStorage fires in a `useEffect` watching `bgs`.
+
+### Data (`src/data/battlegrounds.js`)
 Master database of 13 battlegrounds (10 blitz, 3 epic). Each BG entry has:
 - `graveyards[]`: `{n, x, y, f}` — faction: alliance/horde/neutral
 - `powerups[]`: `{n, x, y, t}` — type: speed/berserk/restore
@@ -28,28 +38,33 @@ Master database of 13 battlegrounds (10 blitz, 3 epic). Each BG entry has:
 
 All positions are **percentages (0–100)** relative to map image dimensions.
 
-### SVG Rendering (~lines 869–1102)
-Markers rendered as inline SVG `<g>` elements. `renderBG(id)` is the main render function — loads the map image, builds SVG overlay, wires event listeners. Routes use `<polyline>` with invisible wider hit-detection strokes (`.rte-hit`). Squiggly mode uses seeded RNG for reproducible MS Paint-style jitter.
+### Component Hierarchy
+```
+App
+├── Header
+├── Sidebar              — BG selection nav
+└── main
+    ├── BgHeader         — title/badge/win condition
+    ├── LayerBar         — layer toggles + edit/squiggly toggles
+    ├── EditBar          — export/import/reset (visible in edit mode)
+    └── MapView          — map image + zoom/pan + SVG overlay
+        ├── ZoomControls
+        ├── SvgOverlay   — builds all SVG markers, handles drag/delete
+        │   └── markers/ — Graveyard, Powerup, Route, Objective
+        ├── TipsPanel    — strategy tips + legend
+        └── AddDialog    — portal for adding markers in edit mode
+```
 
-### Layer System (~lines 1186–1199)
-State object `L = {gy, buf, rte, obj}` controls visibility. `applyLayers()` toggles CSS classes on the SVG container.
-
-### Persistence (~lines 1227–1314)
-localStorage key: `'wow-bg-cheatsheets-data'`. `BGS_DEFAULT` is a deep clone made at startup for reset. Export/import works per-BG as JSON files.
-
-### Edit Mode (~lines 1319–1652)
-Full CRUD: drag to move, right-click to delete, click empty space to add, click route line to insert waypoint. Tips become editable textareas.
-
-### Zoom & Pan (~lines 1682–1755)
-Mouse wheel or buttons, 50%–400% range. Pan via click-drag when zoomed >1x. `wasPanning` flag prevents accidental clicks after pan.
-
-### Initialization (~lines 1757–1759)
-`loadData()` → `initSidebar()` → `renderBG('wsg')`
+### Utilities (`src/utils/`)
+- `colors.js` — `gyColor(f)`, `bufColor(t)`, `objColor(t,f)` map data values to hex colors
+- `squiggly.js` — seeded RNG + squigglyPath for MS Paint-style route jitter
+- `geometry.js` — `pts()`, `distToSegment()`, `svgPoint()` helpers
+- `storage.js` — localStorage persistence, JSON export/import
 
 ## Key Conventions
 
-- **Coordinate system**: All marker positions are percentages, not pixels
-- **Color functions**: `gyColor(f)`, `bufColor(t)`, `objColor(t,f)` map data values to hex colors
-- **SVG is rebuilt completely** on any marker change (acceptable for small marker counts)
-- **Data attributes**: `data-bg`, `data-layer`, `data-idx`, `data-ridx`, `data-pidx` connect DOM to data
-- **No modules or imports** — all code is global scope in a single file
+- **Coordinate system**: All marker positions are percentages (0–100), not pixels
+- **Drag editing**: Managed via document-level mousemove/mouseup listeners with refs, dispatching position updates on mouseup
+- **SVG layer visibility**: Controlled by wrapping each marker type in a `<g>` with `style.display` toggled
+- **CSS class prefixes**: `.mk` (markers), `.lgy`/`.lbuf`/`.lrte`/`.lobj` (layer groups), `.rte` (routes), `.edit-active` (edit mode)
+- **localStorage key**: `'wow-bg-cheatsheets-data'`
