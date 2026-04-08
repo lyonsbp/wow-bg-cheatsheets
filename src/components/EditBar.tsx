@@ -18,7 +18,7 @@ export default function EditBar() {
   };
 
   const handleReset = () => {
-    if (!confirm('Reset ' + bg.name + ' to defaults?')) return;
+    if (!bg || !confirm('Reset ' + bg.name + ' to defaults?')) return;
     dispatch({ type: 'RESET_BG', bgId: curBG });
   };
 
@@ -26,7 +26,7 @@ export default function EditBar() {
     <div className={`edit-bar${editMode ? ' show' : ''}`}>
       <span>✎ Editing: <strong>{bg?.name}</strong></span>
       <button className="ebtn" onClick={handleExport}>Export JSON</button>
-      <button className="ebtn" onClick={handleImport}>Import JSON</button>
+      <button className="ebtn" onClick={() => void handleImport()}>Import JSON</button>
       <button className="ebtn danger" onClick={handleReset}>Reset to Default</button>
       <span className="edit-bar-hint">Click map to add · Drag to move · Right-click to delete · Click route to add waypoint</span>
     </div>

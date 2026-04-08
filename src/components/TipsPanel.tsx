@@ -18,27 +18,31 @@ function Legend() {
   );
 }
 
-export default function TipsPanel({ visible }) {
+interface Props {
+  visible: boolean;
+}
+
+export default function TipsPanel({ visible }: Props) {
   const { state, dispatch } = useBG();
   const { bgs, curBG, editMode } = state;
   const bg = bgs[curBG];
   if (!bg) return null;
 
-  const handleTipChange = (index, value) => {
+  const handleTipChange = (index: number, value: string) => {
     const newTips = [...bg.tips];
     newTips[index] = value;
     dispatch({ type: 'UPDATE_BG_DATA', bgId: curBG, field: 'tips', data: newTips });
   };
 
-  const handleTipMove = (index, dir) => {
+  const handleTipMove = (index: number, dir: number) => {
     const newIdx = index + dir;
     if (newIdx < 0 || newIdx >= bg.tips.length) return;
     const newTips = [...bg.tips];
-    [newTips[index], newTips[newIdx]] = [newTips[newIdx], newTips[index]];
+    [newTips[index], newTips[newIdx]] = [newTips[newIdx]!, newTips[index]!];
     dispatch({ type: 'UPDATE_BG_DATA', bgId: curBG, field: 'tips', data: newTips });
   };
 
-  const handleTipDelete = (index) => {
+  const handleTipDelete = (index: number) => {
     const newTips = [...bg.tips];
     newTips.splice(index, 1);
     dispatch({ type: 'UPDATE_BG_DATA', bgId: curBG, field: 'tips', data: newTips });
@@ -60,7 +64,7 @@ export default function TipsPanel({ visible }) {
               <div key={i} className="tip-edit">
                 <textarea
                   className="tip-edit-text"
-                  rows="2"
+                  rows={2}
                   defaultValue={t}
                   onBlur={(e) => handleTipChange(i, e.target.value)}
                 />

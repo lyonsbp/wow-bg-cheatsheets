@@ -1,4 +1,6 @@
-const BGS = {
+import type { BGMap } from '../types';
+
+const BGS: BGMap = {
 
   wsg: {
     name:"Warsong Gulch", short:"WSG", type:"Capture the Flag", size:"10v10", cat:"blitz",

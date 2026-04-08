@@ -1,8 +1,8 @@
 import { useBG } from '../context/BattlegroundContext';
 
-const ZOOM_MIN = 0.5;
-const ZOOM_MAX = 4;
-const ZOOM_STEP = 0.25;
+export const ZOOM_MIN = 0.5;
+export const ZOOM_MAX = 4;
+export const ZOOM_STEP = 0.25;
 
 export default function ZoomControls() {
   const { state, dispatch } = useBG();
@@ -21,5 +21,3 @@ export default function ZoomControls() {
     </div>
   );
 }
-
-export { ZOOM_MIN, ZOOM_MAX, ZOOM_STEP };

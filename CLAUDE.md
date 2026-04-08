@@ -9,18 +9,22 @@ Interactive web app for World of Warcraft battleground strategy — maps, marker
 ## Commands
 
 ```bash
-npm run dev      # Start Vite dev server (http://localhost:5173)
-npm run build    # Production build to dist/
-npm run preview  # Preview production build
+npm run dev        # Start Vite dev server (http://localhost:5173)
+npm run build      # Type-check + production build to dist/
+npm run typecheck  # Type-check only (tsc --noEmit)
+npm run preview    # Preview production build
 ```
 
 There are no tests, linters, or CI pipelines.
 
 ## Architecture
 
-React 18 app built with Vite. No CSS modules — all styles in a single `App.css` with well-namespaced class prefixes.
+React 18 + TypeScript app built with Vite. Strict mode enabled (`noUncheckedIndexedAccess`, `strict`). No CSS modules — all styles in a single `App.css` with well-namespaced class prefixes.
 
-### State Management (`src/context/BattlegroundContext.jsx`)
+### Types (`src/types.ts`)
+All shared types: `Battleground`, `Graveyard`, `Powerup`, `Route`, `Objective`, `BGMap`, `AppState`, `AppAction`, `LayerKey`, `MarkerLayer`, etc.
+
+### State Management (`src/context/BattlegroundContext.tsx`)
 React Context + `useReducer`. Single source of truth for:
 - `bgs` — full battleground data object (13 BGs)
 - `curBG` — selected BG id
@@ -29,7 +33,7 @@ React Context + `useReducer`. Single source of truth for:
 
 All data mutations go through dispatch actions. `saveData()` to localStorage fires in a `useEffect` watching `bgs`.
 
-### Data (`src/data/battlegrounds.js`)
+### Data (`src/data/battlegrounds.ts`)
 Master database of 13 battlegrounds (10 blitz, 3 epic). Each BG entry has:
 - `graveyards[]`: `{n, x, y, f}` — faction: alliance/horde/neutral
 - `powerups[]`: `{n, x, y, t}` — type: speed/berserk/restore
@@ -56,10 +60,10 @@ App
 ```
 
 ### Utilities (`src/utils/`)
-- `colors.js` — `gyColor(f)`, `bufColor(t)`, `objColor(t,f)` map data values to hex colors
-- `squiggly.js` — seeded RNG + squigglyPath for MS Paint-style route jitter
-- `geometry.js` — `pts()`, `distToSegment()`, `svgPoint()` helpers
-- `storage.js` — localStorage persistence, JSON export/import
+- `colors.ts` — `gyColor(f)`, `bufColor(t)`, `objColor(t,f)` map data values to hex colors
+- `squiggly.ts` — seeded RNG + squigglyPath for MS Paint-style route jitter
+- `geometry.ts` — `pts()`, `distToSegment()`, `svgPoint()` helpers
+- `storage.ts` — localStorage persistence, JSON export/import
 
 ## Key Conventions
 

@@ -1,6 +1,10 @@
 import { useBG } from '../context/BattlegroundContext';
 
-export default function Sidebar({ visible }) {
+interface Props {
+  visible: boolean;
+}
+
+export default function Sidebar({ visible }: Props) {
   const { state, dispatch } = useBG();
   const { bgs, curBG } = state;
 

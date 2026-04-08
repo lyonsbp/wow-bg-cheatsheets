@@ -4,23 +4,30 @@ import SvgOverlay from './SvgOverlay';
 import ZoomControls, { ZOOM_MIN, ZOOM_MAX, ZOOM_STEP } from './ZoomControls';
 import AddDialog from './AddDialog';
 import TipsPanel from './TipsPanel';
+import type { MapPoint } from '../types';
 
-export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, onToggleTips }) {
+interface Props {
+  sidebarVisible: boolean;
+  tipsVisible: boolean;
+  onToggleSidebar: () => void;
+  onToggleTips: () => void;
+}
+
+export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, onToggleTips }: Props) {
   const { state, dispatch } = useBG();
   const { bgs, curBG, editMode, zoomScale } = state;
   const bg = bgs[curBG];
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
-  const [addDlg, setAddDlg] = useState(null);
+  const [addDlg, setAddDlg] = useState<{ position: { x: number; y: number }; mapPoint: MapPoint } | null>(null);
 
-  const mapWrapRef = useRef(null);
-  const svgRef = useRef(null);
+  const mapWrapRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const isPanningRef = useRef(false);
   const wasPanningRef = useRef(false);
   const panStartRef = useRef({ x: 0, y: 0, sx: 0, sy: 0 });
 
-  // Reset map state on BG change
   useEffect(() => {
     setMapLoaded(false);
     setMapError(false);
@@ -31,7 +38,7 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
   useEffect(() => {
     const wrap = mapWrapRef.current;
     if (!wrap) return;
-    const handler = (e) => {
+    const handler = (e: WheelEvent) => {
       e.preventDefault();
       if (e.deltaY < 0) {
         dispatch({ type: 'SET_ZOOM', scale: Math.min(ZOOM_MAX, zoomScale + ZOOM_STEP) });
@@ -44,15 +51,15 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
   }, [zoomScale, dispatch]);
 
   // Pan handlers
-  const handlePanStart = useCallback((e) => {
+  const handlePanStart = useCallback((e: React.MouseEvent) => {
     if (zoomScale <= 1) return;
-    if (editMode && (e.target.closest('.mk') || e.target.closest('.rte-wp') || e.target.closest('.rte-hit'))) return;
+    if (editMode && ((e.target as Element).closest('.mk') || (e.target as Element).closest('.rte-wp') || (e.target as Element).closest('.rte-hit'))) return;
     if (e.button !== 0) return;
-    if (e.target.closest('.add-dlg')) return;
+    if ((e.target as Element).closest('.add-dlg')) return;
 
     isPanningRef.current = true;
     wasPanningRef.current = false;
-    const wrap = mapWrapRef.current;
+    const wrap = mapWrapRef.current!;
     panStartRef.current = {
       x: e.clientX, y: e.clientY,
       sx: wrap.scrollLeft, sy: wrap.scrollTop,
@@ -62,14 +69,16 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
   }, [zoomScale, editMode]);
 
   useEffect(() => {
-    const onMove = (e) => {
+    const onMove = (e: MouseEvent) => {
       if (!isPanningRef.current) return;
       const dx = e.clientX - panStartRef.current.x;
       const dy = e.clientY - panStartRef.current.y;
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) wasPanningRef.current = true;
       const wrap = mapWrapRef.current;
-      wrap.scrollLeft = panStartRef.current.sx - dx;
-      wrap.scrollTop = panStartRef.current.sy - dy;
+      if (wrap) {
+        wrap.scrollLeft = panStartRef.current.sx - dx;
+        wrap.scrollTop = panStartRef.current.sy - dy;
+      }
     };
     const onUp = () => {
       if (!isPanningRef.current) return;
@@ -85,20 +94,10 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
     };
   }, []);
 
-  const handleMapClick = useCallback((e, pt) => {
+  const handleMapClick = useCallback((_e: React.MouseEvent, pt: MapPoint) => {
     if (wasPanningRef.current) return;
-    setAddDlg({ position: { x: e.clientX, y: e.clientY }, mapPoint: pt });
+    setAddDlg({ position: { x: _e.clientX, y: _e.clientY }, mapPoint: pt });
   }, []);
-
-  const onMapLoad = () => {
-    setMapLoaded(true);
-    setMapError(false);
-  };
-
-  const onMapErr = () => {
-    setMapLoaded(false);
-    setMapError(true);
-  };
 
   if (!bg) return null;
 
@@ -135,8 +134,8 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
               src={bg.map}
               alt={bg.name + ' map'}
               style={{ display: mapLoaded ? 'block' : 'none' }}
-              onLoad={onMapLoad}
-              onError={onMapErr}
+              onLoad={() => { setMapLoaded(true); setMapError(false); }}
+              onError={() => { setMapLoaded(false); setMapError(true); }}
             />
           ) : null}
 

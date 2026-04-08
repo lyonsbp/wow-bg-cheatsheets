@@ -1,7 +1,18 @@
+import type { Route as RouteData } from '../../types';
 import { pts } from '../../utils/geometry';
 import { squigglyPath } from '../../utils/squiggly';
 
-export default function Route({ data, index, squigglyMode, onWpDragStart, onWpContextMenu, onRouteContextMenu, onInsertWaypoint }) {
+interface Props {
+  data: RouteData;
+  index: number;
+  squigglyMode: boolean;
+  onWpDragStart?: (e: React.MouseEvent, ridx: number, pidx: number) => void;
+  onWpContextMenu?: (e: React.MouseEvent, ridx: number, pidx: number) => void;
+  onRouteContextMenu?: (e: React.MouseEvent, ridx: number) => void;
+  onInsertWaypoint?: (e: React.MouseEvent, ridx: number) => void;
+}
+
+export default function Route({ data, index, squigglyMode, onWpDragStart, onWpContextMenu, onRouteContextMenu, onInsertWaypoint }: Props) {
   const wps = data.pts.map((p, pi) => (
     <circle
       key={pi}
@@ -20,17 +31,15 @@ export default function Route({ data, index, squigglyMode, onWpDragStart, onWpCo
     />
   ));
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (!(e.target as Element).closest('.rte-wp')) onRouteContextMenu?.(e, index);
+  };
+
   if (squigglyMode) {
     const seed = index * 7919 + 42;
     const d = squigglyPath(data.pts, seed);
     return (
-      <g
-        className="lrte"
-        data-ridx={index}
-        onContextMenu={(e) => {
-          if (!e.target.closest('.rte-wp')) onRouteContextMenu?.(e, index);
-        }}
-      >
+      <g className="lrte" data-ridx={index} onContextMenu={handleContextMenu}>
         <path className="rte-glow" d={d} fill="none" stroke={data.c}
           strokeWidth="3" opacity=".15" />
         <path className="rte-line" d={d} fill="none" stroke={data.c}
@@ -45,13 +54,7 @@ export default function Route({ data, index, squigglyMode, onWpDragStart, onWpCo
   }
 
   return (
-    <g
-      className="lrte"
-      data-ridx={index}
-      onContextMenu={(e) => {
-        if (!e.target.closest('.rte-wp')) onRouteContextMenu?.(e, index);
-      }}
-    >
+    <g className="lrte" data-ridx={index} onContextMenu={handleContextMenu}>
       <polyline className="rte-glow" points={pts(data.pts)} fill="none" stroke={data.c}
         strokeWidth="2.25" opacity=".12" />
       <polyline className="rte-line" points={pts(data.pts)} fill="none" stroke={data.c}

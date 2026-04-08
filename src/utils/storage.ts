@@ -1,7 +1,11 @@
+import type { BGMap, Battleground } from '../types';
+
 const STORAGE_KEY = 'wow-bg-cheatsheets-data';
 
-export function saveData(bgs) {
-  const out = {};
+type SavedBGData = Pick<Battleground, 'graveyards' | 'powerups' | 'routes' | 'objectives' | 'tips'>;
+
+export function saveData(bgs: BGMap): void {
+  const out: Record<string, SavedBGData> = {};
   for (const [id, bg] of Object.entries(bgs)) {
     out[id] = {
       graveyards: bg.graveyards,
@@ -14,19 +18,20 @@ export function saveData(bgs) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
 }
 
-export function loadData(bgs) {
+export function loadData(bgs: BGMap): BGMap {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return bgs;
   try {
-    const data = JSON.parse(raw);
-    const merged = JSON.parse(JSON.stringify(bgs));
+    const data = JSON.parse(raw) as Record<string, Partial<SavedBGData>>;
+    const merged: BGMap = JSON.parse(JSON.stringify(bgs)) as BGMap;
     for (const [id, saved] of Object.entries(data)) {
-      if (!merged[id]) continue;
-      if (saved.graveyards) merged[id].graveyards = saved.graveyards;
-      if (saved.powerups) merged[id].powerups = saved.powerups;
-      if (saved.routes) merged[id].routes = saved.routes;
-      if (saved.objectives) merged[id].objectives = saved.objectives;
-      if (saved.tips) merged[id].tips = saved.tips;
+      const bg = merged[id];
+      if (!bg) continue;
+      if (saved.graveyards) bg.graveyards = saved.graveyards;
+      if (saved.powerups) bg.powerups = saved.powerups;
+      if (saved.routes) bg.routes = saved.routes;
+      if (saved.objectives) bg.objectives = saved.objectives;
+      if (saved.tips) bg.tips = saved.tips;
     }
     return merged;
   } catch (e) {
@@ -35,10 +40,10 @@ export function loadData(bgs) {
   }
 }
 
-export function exportJSON(bgId, bgs) {
+export function exportJSON(bgId: string, bgs: BGMap): void {
   const bg = bgs[bgId];
   if (!bg) return;
-  const data = {
+  const data: SavedBGData = {
     graveyards: bg.graveyards,
     powerups: bg.powerups,
     routes: bg.routes,
@@ -53,19 +58,19 @@ export function exportJSON(bgId, bgs) {
   URL.revokeObjectURL(a.href);
 }
 
-export function importJSON() {
+export function importJSON(): Promise<Partial<SavedBGData> | null> {
   return new Promise((resolve) => {
     const inp = document.createElement('input');
     inp.type = 'file';
     inp.accept = '.json';
     inp.onchange = () => {
-      const f = inp.files[0];
+      const f = inp.files?.[0];
       if (!f) { resolve(null); return; }
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          resolve(JSON.parse(reader.result));
-        } catch (e) {
+          resolve(JSON.parse(reader.result as string) as Partial<SavedBGData>);
+        } catch {
           alert('Invalid JSON file');
           resolve(null);
         }

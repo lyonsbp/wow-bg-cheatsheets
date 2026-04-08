@@ -1,6 +1,7 @@
+import type { Objective as ObjectiveData, ObjectiveType, Faction, MarkerLayer } from '../../types';
 import { objColor } from '../../utils/colors';
 
-function ObjShape({ type, faction, color }) {
+function ObjShape({ type, color }: { type: ObjectiveType; faction?: Faction; color: string }) {
   if (type === 'zone') {
     return <circle r="5" fill={color} opacity=".12" stroke={color} strokeWidth=".4" strokeDasharray="1.2,1" />;
   }
@@ -20,13 +21,19 @@ function ObjShape({ type, faction, color }) {
       </>
     );
   }
-  // star (node / tower / orb)
   const pts5 = '0,-3.2 .74,-.9 3.1,-.9 1.2,.7 1.9,2.9 0,1.6 -1.9,2.9 -1.2,.7 -3.1,-.9 -.74,-.9';
   return <polygon points={pts5} fill={color} stroke="#000a" strokeWidth=".3" opacity=".88" />;
 }
 
-export default function Objective({ data, index, onDragStart, onContextMenu }) {
-  const c = objColor(data.t, data.f || 'neutral');
+interface Props {
+  data: ObjectiveData;
+  index: number;
+  onDragStart?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+  onContextMenu?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+}
+
+export default function Objective({ data, index, onDragStart, onContextMenu }: Props) {
+  const c = objColor(data.t, data.f ?? 'neutral');
   return (
     <g
       className="mk lobj"

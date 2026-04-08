@@ -1,6 +1,14 @@
+import type { Graveyard as GraveyardData, MarkerLayer } from '../../types';
 import { gyColor } from '../../utils/colors';
 
-export default function Graveyard({ data, index, onDragStart, onContextMenu }) {
+interface Props {
+  data: GraveyardData;
+  index: number;
+  onDragStart?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+  onContextMenu?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+}
+
+export default function Graveyard({ data, index, onDragStart, onContextMenu }: Props) {
   const c = gyColor(data.f || 'neutral');
   return (
     <g

@@ -1,20 +1,28 @@
+import type { Powerup as PowerupData, MarkerLayer } from '../../types';
 import { bufColor } from '../../utils/colors';
 
-const DESCRIPTIONS = {
+const DESCRIPTIONS: Record<string, string> = {
   speed: '+100% Move Speed 10s',
   berserk: '+30% Dmg / +10% Dmg Taken 60s',
   restore: 'Restore HP+Mana 10s',
 };
 
-const SYMBOLS = {
+const SYMBOLS: Record<string, string> = {
   speed: '⚡',
   berserk: '⚔',
   restore: '♥',
 };
 
-export default function Powerup({ data, index, onDragStart, onContextMenu }) {
+interface Props {
+  data: PowerupData;
+  index: number;
+  onDragStart?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+  onContextMenu?: (e: React.MouseEvent, layer: MarkerLayer, index: number) => void;
+}
+
+export default function Powerup({ data, index, onDragStart, onContextMenu }: Props) {
   const c = bufColor(data.t);
-  const sym = SYMBOLS[data.t] || '♥';
+  const sym = SYMBOLS[data.t] ?? '♥';
   return (
     <g
       className="mk lbuf"
@@ -24,7 +32,7 @@ export default function Powerup({ data, index, onDragStart, onContextMenu }) {
       onMouseDown={(e) => onDragStart?.(e, 'powerups', index)}
       onContextMenu={(e) => onContextMenu?.(e, 'powerups', index)}
     >
-      <title>{data.n} — {DESCRIPTIONS[data.t] || ''}</title>
+      <title>{data.n} — {DESCRIPTIONS[data.t] ?? ''}</title>
       <polygon
         points="0,-1.4 1.4,0 0,1.4 -1.4,0"
         fill={c} stroke="#000a" strokeWidth="0.2" opacity=".9"

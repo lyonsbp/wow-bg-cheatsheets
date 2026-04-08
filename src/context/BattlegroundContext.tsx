@@ -1,10 +1,11 @@
-import { createContext, useContext, useReducer, useEffect, useRef } from 'react';
+import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode } from 'react';
+import type { AppState, AppAction, BGMap, Battleground } from '../types';
 import BGS_ORIGINAL from '../data/battlegrounds';
 import { saveData, loadData } from '../utils/storage';
 
-const BGS_DEFAULT = JSON.parse(JSON.stringify(BGS_ORIGINAL));
+const BGS_DEFAULT: BGMap = JSON.parse(JSON.stringify(BGS_ORIGINAL)) as BGMap;
 
-const initialState = {
+const initialState: AppState = {
   bgs: loadData(BGS_ORIGINAL),
   curBG: 'wsg',
   layers: { gy: true, buf: true, rte: true, obj: true },
@@ -13,7 +14,7 @@ const initialState = {
   zoomScale: 1,
 };
 
-function reducer(state, action) {
+function reducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SELECT_BG':
       return { ...state, curBG: action.id };
@@ -39,73 +40,79 @@ function reducer(state, action) {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], [field]: data },
+          [bgId]: { ...state.bgs[bgId]!, [field]: data },
         },
       };
     }
 
     case 'UPDATE_MARKER_POS': {
       const { bgId, layer, index, x, y } = action;
-      const newArr = [...state.bgs[bgId][layer]];
-      newArr[index] = { ...newArr[index], x, y };
+      const bg = state.bgs[bgId]!;
+      const newArr = [...bg[layer]];
+      newArr[index] = { ...newArr[index]!, x, y };
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], [layer]: newArr },
+          [bgId]: { ...bg, [layer]: newArr },
         },
       };
     }
 
     case 'UPDATE_WAYPOINT_POS': {
       const { bgId, routeIdx, pointIdx, x, y } = action;
-      const newRoutes = [...state.bgs[bgId].routes];
-      const newPts = [...newRoutes[routeIdx].pts];
+      const bg = state.bgs[bgId]!;
+      const newRoutes = [...bg.routes];
+      const route = newRoutes[routeIdx]!;
+      const newPts: [number, number][] = [...route.pts];
       newPts[pointIdx] = [x, y];
-      newRoutes[routeIdx] = { ...newRoutes[routeIdx], pts: newPts };
+      newRoutes[routeIdx] = { ...route, pts: newPts };
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], routes: newRoutes },
+          [bgId]: { ...bg, routes: newRoutes },
         },
       };
     }
 
     case 'DELETE_MARKER': {
       const { bgId, layer, index } = action;
-      const newArr = [...state.bgs[bgId][layer]];
+      const bg = state.bgs[bgId]!;
+      const newArr = [...bg[layer]];
       newArr.splice(index, 1);
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], [layer]: newArr },
+          [bgId]: { ...bg, [layer]: newArr },
         },
       };
     }
 
     case 'DELETE_ROUTE': {
       const { bgId, index } = action;
-      const newRoutes = [...state.bgs[bgId].routes];
+      const bg = state.bgs[bgId]!;
+      const newRoutes = [...bg.routes];
       newRoutes.splice(index, 1);
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], routes: newRoutes },
+          [bgId]: { ...bg, routes: newRoutes },
         },
       };
     }
 
     case 'DELETE_WAYPOINT': {
       const { bgId, routeIdx, pointIdx } = action;
-      const newRoutes = [...state.bgs[bgId].routes];
-      const route = newRoutes[routeIdx];
+      const bg = state.bgs[bgId]!;
+      const newRoutes = [...bg.routes];
+      const route = newRoutes[routeIdx]!;
       if (route.pts.length <= 2) {
         newRoutes.splice(routeIdx, 1);
       } else {
-        const newPts = [...route.pts];
+        const newPts: [number, number][] = [...route.pts];
         newPts.splice(pointIdx, 1);
         newRoutes[routeIdx] = { ...route, pts: newPts };
       }
@@ -113,64 +120,69 @@ function reducer(state, action) {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], routes: newRoutes },
+          [bgId]: { ...bg, routes: newRoutes },
         },
       };
     }
 
     case 'INSERT_WAYPOINT': {
       const { bgId, routeIdx, insertIdx, x, y } = action;
-      const newRoutes = [...state.bgs[bgId].routes];
-      const newPts = [...newRoutes[routeIdx].pts];
+      const bg = state.bgs[bgId]!;
+      const newRoutes = [...bg.routes];
+      const route = newRoutes[routeIdx]!;
+      const newPts: [number, number][] = [...route.pts];
       newPts.splice(insertIdx, 0, [x, y]);
-      newRoutes[routeIdx] = { ...newRoutes[routeIdx], pts: newPts };
+      newRoutes[routeIdx] = { ...route, pts: newPts };
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], routes: newRoutes },
+          [bgId]: { ...bg, routes: newRoutes },
         },
       };
     }
 
     case 'ADD_MARKER': {
       const { bgId, layer, marker } = action;
-      const newArr = [...state.bgs[bgId][layer], marker];
+      const bg = state.bgs[bgId]!;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newArr = [...bg[layer] as any[], marker];
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], [layer]: newArr },
+          [bgId]: { ...bg, [layer]: newArr },
         },
       };
     }
 
     case 'ADD_ROUTE': {
       const { bgId, route } = action;
-      const newRoutes = [...state.bgs[bgId].routes, route];
+      const bg = state.bgs[bgId]!;
       return {
         ...state,
         bgs: {
           ...state.bgs,
-          [bgId]: { ...state.bgs[bgId], routes: newRoutes },
+          [bgId]: { ...bg, routes: [...bg.routes, route] },
         },
       };
     }
 
     case 'RESET_BG': {
       const { bgId } = action;
-      const def = BGS_DEFAULT[bgId];
+      const def = BGS_DEFAULT[bgId]!;
+      const bg = state.bgs[bgId]!;
       return {
         ...state,
         bgs: {
           ...state.bgs,
           [bgId]: {
-            ...state.bgs[bgId],
-            graveyards: JSON.parse(JSON.stringify(def.graveyards)),
-            powerups: JSON.parse(JSON.stringify(def.powerups)),
-            routes: JSON.parse(JSON.stringify(def.routes)),
-            objectives: JSON.parse(JSON.stringify(def.objectives)),
-            tips: JSON.parse(JSON.stringify(def.tips)),
+            ...bg,
+            graveyards: JSON.parse(JSON.stringify(def.graveyards)) as Battleground['graveyards'],
+            powerups: JSON.parse(JSON.stringify(def.powerups)) as Battleground['powerups'],
+            routes: JSON.parse(JSON.stringify(def.routes)) as Battleground['routes'],
+            objectives: JSON.parse(JSON.stringify(def.objectives)) as Battleground['objectives'],
+            tips: JSON.parse(JSON.stringify(def.tips)) as string[],
           },
         },
       };
@@ -178,7 +190,7 @@ function reducer(state, action) {
 
     case 'IMPORT_DATA': {
       const { bgId, data } = action;
-      const bg = { ...state.bgs[bgId] };
+      const bg = { ...state.bgs[bgId]! };
       if (data.graveyards) bg.graveyards = data.graveyards;
       if (data.powerups) bg.powerups = data.powerups;
       if (data.routes) bg.routes = data.routes;
@@ -195,9 +207,14 @@ function reducer(state, action) {
   }
 }
 
-const BattlegroundContext = createContext(null);
+interface BGContextValue {
+  state: AppState;
+  dispatch: React.Dispatch<AppAction>;
+}
 
-export function BattlegroundProvider({ children }) {
+const BattlegroundContext = createContext<BGContextValue | null>(null);
+
+export function BattlegroundProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const isFirstRender = useRef(true);
 
@@ -216,7 +233,7 @@ export function BattlegroundProvider({ children }) {
   );
 }
 
-export function useBG() {
+export function useBG(): BGContextValue {
   const ctx = useContext(BattlegroundContext);
   if (!ctx) throw new Error('useBG must be used within BattlegroundProvider');
   return ctx;

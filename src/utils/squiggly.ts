@@ -1,19 +1,22 @@
-export function seededRng(seed) {
+export function seededRng(seed: number): () => number {
+  let s = seed;
   return function () {
-    seed = (seed * 16807 + 0) % 2147483647;
-    return (seed - 1) / 2147483646;
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
   };
 }
 
-export function squigglyPath(waypoints, seed) {
+export function squigglyPath(waypoints: [number, number][], seed: number): string {
   const rng = seededRng(seed);
   const wobble = 1.4;
   const segLen = 2.5;
-  let d = `M ${waypoints[0][0]} ${waypoints[0][1]}`;
+  let d = `M ${waypoints[0]![0]} ${waypoints[0]![1]}`;
 
   for (let i = 0; i < waypoints.length - 1; i++) {
-    const ax = waypoints[i][0], ay = waypoints[i][1];
-    const bx = waypoints[i + 1][0], by = waypoints[i + 1][1];
+    const cur = waypoints[i]!;
+    const next = waypoints[i + 1]!;
+    const ax = cur[0], ay = cur[1];
+    const bx = next[0], by = next[1];
     const dx = bx - ax, dy = by - ay;
     const len = Math.sqrt(dx * dx + dy * dy);
     if (len < 0.1) continue;

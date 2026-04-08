@@ -1,8 +1,10 @@
-export function pts(arr) {
+import type { MapPoint } from '../types';
+
+export function pts(arr: [number, number][]): string {
   return arr.map(p => p[0] + ',' + p[1]).join(' ');
 }
 
-export function distToSegment(px, py, a, b) {
+export function distToSegment(px: number, py: number, a: [number, number], b: [number, number]): number {
   const dx = b[0] - a[0], dy = b[1] - a[1];
   const len2 = dx * dx + dy * dy;
   if (len2 === 0) return Math.hypot(px - a[0], py - a[1]);
@@ -11,7 +13,7 @@ export function distToSegment(px, py, a, b) {
   return Math.hypot(px - (a[0] + t * dx), py - (a[1] + t * dy));
 }
 
-export function svgPoint(e, svgEl) {
+export function svgPoint(e: MouseEvent, svgEl: SVGSVGElement): MapPoint {
   const rect = svgEl.getBoundingClientRect();
   return {
     x: ((e.clientX - rect.left) / rect.width) * 100,
