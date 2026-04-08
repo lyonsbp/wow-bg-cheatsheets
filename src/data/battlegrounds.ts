@@ -4,7 +4,7 @@ const BGS: BGMap = {
 
   wsg: {
     name:"Warsong Gulch", short:"WSG", type:"Capture the Flag", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-WarsongGulchUpdate.jpg",
+    map:"/maps/wsg.jpg",
     win:"Capture enemy flag 3 times",
     tips:[
       "Tunnel (center) is fastest but riskiest — heavy traffic",
@@ -37,7 +37,7 @@ const BGS: BGMap = {
 
   ab: {
     name:"Arathi Basin", short:"AB", type:"Domination", size:"15v15", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-ArathiBasinUpdate.jpg",
+    map:"/maps/ab.jpg",
     win:"First to 1,600 resources",
     tips:[
       "Opening rush: Alliance → Stables/Mine, Horde → Farm/Mine",
@@ -80,7 +80,7 @@ const BGS: BGMap = {
 
   eots: {
     name:"Eye of the Storm", short:"EotS", type:"Domination + Flag", size:"15v15", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-NetherstormArena.jpg",
+    map:"/maps/eots.jpg",
     win:"First to 1,600 points (towers × flag caps)",
     tips:[
       "Flag only scores if your team holds 2 or more towers",
@@ -126,7 +126,7 @@ const BGS: BGMap = {
 
   bfg: {
     name:"Battle for Gilneas", short:"BfG", type:"Domination", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-GilneasBattleground2.jpg",
+    map:"/maps/bfg.jpg",
     win:"First to 2,000 resources",
     tips:[
       "UNIQUE: You respawn at your 2nd nearest GY, not nearest!",
@@ -164,7 +164,7 @@ const BGS: BGMap = {
 
   tp: {
     name:"Twin Peaks", short:"TP", type:"Capture the Flag", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-TwinPeaks.jpg",
+    map:"/maps/tp.jpg",
     win:"Capture enemy flag 3 times",
     tips:[
       "2 graveyards per faction — don't let enemy cap both",
@@ -198,7 +198,7 @@ const BGS: BGMap = {
 
   sm: {
     name:"Silvershard Mines", short:"SSM", type:"Resource Race", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-STVDiamondMineBG.jpg",
+    map:"/maps/sm.jpg",
     win:"First to 1,600 resources via mine carts",
     tips:[
       "3 carts auto-move along rail tracks — stand near to control",
@@ -233,7 +233,7 @@ const BGS: BGMap = {
 
   tok: {
     name:"Temple of Kotmogu", short:"ToK", type:"Orb Control", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-TempleofKotmogu.jpg",
+    map:"/maps/tok.jpg",
     win:"First to 1,600 points (hold orbs near center)",
     tips:[
       "Orbs score more points the closer they are to the center",
@@ -273,7 +273,7 @@ const BGS: BGMap = {
 
   dg: {
     name:"Deepwind Gorge", short:"DG", type:"Domination", size:"15v15", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-GoldRush_Updated.jpg",
+    map:"/maps/dg.jpg",
     win:"First to 1,500 resources",
     tips:[
       "5-node layout similar to AB — Market (center) = Blacksmith",
@@ -355,7 +355,7 @@ const BGS: BGMap = {
 
   ss: {
     name:"Seething Shore", short:"SS", type:"Resource Race", size:"10v10", cat:"blitz",
-    map:"https://warcraft.wiki.gg/images/WorldMap-AzeriteBG.jpg",
+    map:"/maps/ss.jpg",
     win:"First to 1,500 Azerite resources",
     tips:[
       "3 Azerite nodes active at once — locations vary each match",
@@ -391,7 +391,7 @@ const BGS: BGMap = {
 
   av: {
     name:"Alterac Valley", short:"AV", type:"Epic Battle", size:"40v40", cat:"epic",
-    map:"https://warcraft.wiki.gg/images/WorldMap-AlteracValley.jpg",
+    map:"/maps/av.jpg",
     win:"Kill enemy General (Drek'Thar / Vanndar) or deplete reinforcements",
     tips:[
       "Rush past FWGY to deny Horde reinforcements — top priority",
@@ -430,7 +430,7 @@ const BGS: BGMap = {
 
   ioc: {
     name:"Isle of Conquest", short:"IoC", type:"Epic Siege", size:"40v40", cat:"epic",
-    map:"https://warcraft.wiki.gg/images/WorldMap-IsleofConquest.jpg",
+    map:"/maps/ioc.jpg",
     win:"Breach enemy keep and kill their General",
     tips:[
       "Workshop = siege vehicles (Glaives/Demolishers) — top priority",
