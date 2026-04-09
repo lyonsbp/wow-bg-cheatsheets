@@ -49,6 +49,19 @@ function reducer(state: AppState, action: AppAction): AppState {
       return { ...state, hiddenItems: next };
     }
 
+    case 'TOGGLE_GROUP_VISIBILITY': {
+      const next = new Set(state.hiddenItems);
+      const allHidden = action.keys.every(k => next.has(k));
+      for (const k of action.keys) {
+        if (allHidden) {
+          next.delete(k);
+        } else {
+          next.add(k);
+        }
+      }
+      return { ...state, hiddenItems: next };
+    }
+
     case 'UPDATE_BG_DATA': {
       const { bgId, field, data } = action;
       return {

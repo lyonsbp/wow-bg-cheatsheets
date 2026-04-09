@@ -23,7 +23,7 @@ export default function Header() {
         title="Toggle theme"
       >
         {theme === 'dark' ? '☀' : '☾'}
-        <span className="text-[.75rem]">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+        <span className="text-xs">{theme === 'dark' ? 'Light' : 'Dark'}</span>
       </button>
     </header>
   );

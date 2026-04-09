@@ -15,11 +15,10 @@ npm run typecheck  # Type-check only (tsc --noEmit)
 npm run preview    # Preview production build
 ```
 
-There are no tests, linters, or CI pipelines.
-
 ## Architecture
 
 React 18 + TypeScript app built with Vite. Strict mode enabled (`noUncheckedIndexedAccess`, `strict`). No CSS modules — all styles in a single `App.css` with well-namespaced class prefixes.
+Use tailwind classes for types, avoiding arbitrary numbers.
 
 ### Types (`src/types.ts`)
 All shared types: `Battleground`, `Graveyard`, `Powerup`, `Route`, `Objective`, `BGMap`, `AppState`, `AppAction`, `LayerKey`, `MarkerLayer`, etc.
@@ -72,3 +71,4 @@ App
 - **SVG layer visibility**: Controlled by wrapping each marker type in a `<g>` with `style.display` toggled
 - **CSS class prefixes**: `.mk` (markers), `.lgy`/`.lbuf`/`.lrte`/`.lobj` (layer groups), `.rte` (routes), `.edit-active` (edit mode)
 - **localStorage key**: `'wow-bg-cheatsheets-data'`
+

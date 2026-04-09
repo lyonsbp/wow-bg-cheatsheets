@@ -31,10 +31,11 @@ describe('App', () => {
 
   it('renders layer toggle buttons', () => {
     render(<App />);
-    expect(screen.getByText('Graveyards')).toBeInTheDocument();
-    expect(screen.getByText('Power-ups')).toBeInTheDocument();
-    expect(screen.getByText('Routes')).toBeInTheDocument();
-    expect(screen.getByText('Objectives')).toBeInTheDocument();
+    // These appear in both layer bar and legend, so use getAllBy
+    expect(screen.getAllByText('Graveyards').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Power-ups').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Routes').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Objectives').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Edit Mode')).toBeInTheDocument();
     expect(screen.getByText('Squiggly')).toBeInTheDocument();
   });

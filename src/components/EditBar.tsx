@@ -25,12 +25,12 @@ export default function EditBar() {
   if (!editMode) return null;
 
   return (
-    <div className="px-3.5 py-[5px] bg-[var(--edit-bg)] border-b border-[var(--edit-border)] flex gap-2 items-center shrink-0 text-[.8rem] text-[var(--edit-text)]">
+    <div className="px-3.5 py-[5px] bg-[var(--edit-bg)] border-b border-[var(--edit-border)] flex gap-2 items-center shrink-0 text-[var(--edit-text)]">
       <span>✎ Editing: <strong>{bg?.name}</strong></span>
-      <button className="px-2.5 py-1 rounded border border-[var(--border-accent)] bg-[var(--bg-surface)] text-[var(--edit-text)] text-[.8rem] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--accent-gold)]" onClick={handleExport}>Export JSON</button>
-      <button className="px-2.5 py-1 rounded border border-[var(--border-accent)] bg-[var(--bg-surface)] text-[var(--edit-text)] text-[.8rem] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--accent-gold)]" onClick={() => void handleImport()}>Import JSON</button>
-      <button className="px-2.5 py-1 rounded border border-[var(--danger-border)] bg-[var(--bg-surface)] text-[var(--danger)] text-[.8rem] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--danger-hover-bg)] hover:border-[var(--danger)]" onClick={handleReset}>Reset to Default</button>
-      <span className="text-[var(--edit-hint)] text-[.75rem] ml-auto">Click map to add · Drag to move · Right-click to delete · Click route to add waypoint</span>
+      <button className="px-2.5 py-1 rounded border border-[var(--border-accent)] bg-[var(--bg-surface)] text-[var(--edit-text)] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--accent-gold)]" onClick={handleExport}>Export JSON</button>
+      <button className="px-2.5 py-1 rounded border border-[var(--border-accent)] bg-[var(--bg-surface)] text-[var(--edit-text)] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--accent-gold)]" onClick={() => void handleImport()}>Import JSON</button>
+      <button className="px-2.5 py-1 rounded border border-[var(--danger-border)] bg-[var(--bg-surface)] text-[var(--danger)] cursor-pointer transition-all duration-[120ms] hover:bg-[var(--danger-hover-bg)] hover:border-[var(--danger)]" onClick={handleReset}>Reset to Default</button>
+      <span className="text-[var(--edit-hint)] text-xs ml-auto">Click map to add · Drag to move · Right-click to delete · Click route to add waypoint</span>
     </div>
   );
 }

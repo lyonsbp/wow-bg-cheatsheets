@@ -22,7 +22,7 @@ export default function Sidebar({ visible }: Props) {
           onClick={() => dispatch({ type: 'SELECT_BG', id })}
         >
           <span className={`font-medium block ${curBG === id ? 'text-[var(--accent-gold)]' : 'text-[var(--text-secondary)]'}`}>{bg.name}</span>
-          <span className="text-[var(--text-muted)] text-sm block mt-0.5">{bg.short} &middot; {bg.type}</span>
+          <span className="text-[var(--text-muted)] text-sm block mt-0.5 font-semibold">{bg.short} &middot; {bg.type}</span>
         </button>
       ))}
       <div className="px-3 pt-2.5 pb-1 text-[var(--text-muted)] uppercase tracking-[1.2px] font-bold border-t border-[var(--border-default)] mt-1">Epic &nbsp;40v40</div>
@@ -33,8 +33,8 @@ export default function Sidebar({ visible }: Props) {
           data-bg={id}
           onClick={() => dispatch({ type: 'SELECT_BG', id })}
         >
-          <span className={` font-medium block ${curBG === id ? 'text-[var(--accent-gold)]' : 'text-[var(--text-secondary)]'}`}>{bg.name}</span>
-          <span className=" text-[var(--text-muted)] block mt-0.5 text-sm">{bg.short} &middot; {bg.type}</span>
+          <span className={`font-medium block ${curBG === id ? 'text-[var(--accent-gold)]' : 'text-[var(--text-secondary)]'}`}>{bg.name}</span>
+          <span className="text-[var(--text-muted)] block mt-0.5 font-semibold text-sm">{bg.short} &middot; {bg.type}</span>
         </button>
       ))}
     </nav>

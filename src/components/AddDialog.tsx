@@ -127,8 +127,8 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
     onClose();
   };
 
-  const btnClass = "block w-full py-1.5 px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-primary)] text-[.8rem] cursor-pointer text-left mb-[3px] transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)]";
-  const subClass = "block w-full py-[5px] px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-secondary)] text-[.8rem] cursor-pointer text-left mb-0.5 transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-strong)]";
+  const btnClass = "block w-full py-1.5 px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-primary)] cursor-pointer text-left mb-[3px] transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)]";
+  const subClass = "block w-full py-[5px] px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-secondary)] cursor-pointer text-left mb-0.5 transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-strong)]";
 
   return createPortal(
     <div
@@ -138,7 +138,7 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
     >
       {submenu ? (
         <>
-          <div className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">{SUBMENUS[submenu].title}</div>
+          <div className="text-xs text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">{SUBMENUS[submenu].title}</div>
           {SUBMENUS[submenu].items.map(item => (
             <button key={item.key} className={subClass} onClick={() => addMarker(item.key)}>
               {item.label}
@@ -148,7 +148,7 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
         </>
       ) : (
         <>
-          <div className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">Add Marker at ({Math.round(mapPoint.x)}, {Math.round(mapPoint.y)})</div>
+          <div className="text-xs text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">Add Marker at ({Math.round(mapPoint.x)}, {Math.round(mapPoint.y)})</div>
           <button className={btnClass} onClick={() => setSubmenu('gy')}>☩ Graveyard</button>
           <button className={btnClass} onClick={() => setSubmenu('buf')}>◆ Power-up</button>
           <button className={btnClass} onClick={() => setSubmenu('obj')}>★ Objective</button>

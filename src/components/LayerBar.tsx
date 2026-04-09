@@ -6,7 +6,7 @@ function Toggle({ on, color, borderColor, bgColor, onClick, children }: {
 }) {
   return (
     <span
-      className="inline-flex items-center gap-1 cursor-pointer px-2.5 py-[3px] rounded border text-[.8rem] transition-all duration-150 select-none"
+      className="inline-flex items-center gap-1 cursor-pointer px-2.5 py-[3px] rounded border text-sm transition-all duration-150 select-none"
       style={{
         borderColor,
         color,
@@ -27,11 +27,11 @@ export default function LayerBar() {
 
   return (
     <div className="px-3.5 py-1.5 bg-[var(--bg-surface)] border-b border-[var(--border-default)] flex gap-2 items-center shrink-0 flex-wrap">
-      <span className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-wide mr-0.5">Layers:</span>
+      <span className="text-xs text-[var(--text-muted)] uppercase tracking-wide mr-0.5">Layers:</span>
       <Toggle on={layers.gy} color="var(--ltog-gy)" borderColor="var(--ltog-gy-border)" bgColor="var(--ltog-gy-bg)" onClick={() => dispatch({ type: 'TOGGLE_LAYER', key: 'gy' })}>Graveyards</Toggle>
       <Toggle on={layers.buf} color="var(--ltog-buf)" borderColor="var(--ltog-buf-border)" bgColor="var(--ltog-buf-bg)" onClick={() => dispatch({ type: 'TOGGLE_LAYER', key: 'buf' })}>Power-ups</Toggle>
       <Toggle on={layers.rte} color="var(--ltog-rte)" borderColor="var(--ltog-rte-border)" bgColor="var(--ltog-rte-bg)" onClick={() => dispatch({ type: 'TOGGLE_LAYER', key: 'rte' })}>Routes</Toggle>
-      <label className="inline-flex items-center gap-1 text-[.75rem] text-[var(--ltog-rte)] cursor-default" title="Route thickness">
+      <label className="inline-flex items-center gap-1 text-xs text-[var(--ltog-rte)] cursor-default" title="Route thickness">
         <span className="text-[var(--text-muted)] uppercase tracking-[.5px]">Thickness</span>
         <input
           type="range"

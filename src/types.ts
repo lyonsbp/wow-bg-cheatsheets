@@ -76,6 +76,7 @@ export type AppAction =
   | { type: 'SET_ZOOM'; scale: number }
   | { type: 'SET_STROKE_WIDTH'; width: number }
   | { type: 'TOGGLE_ITEM_VISIBILITY'; key: string }
+  | { type: 'TOGGLE_GROUP_VISIBILITY'; keys: string[] }
   | { type: 'UPDATE_BG_DATA'; bgId: string; field: keyof Battleground; data: Battleground[keyof Battleground] }
   | { type: 'UPDATE_MARKER_POS'; bgId: string; layer: 'graveyards' | 'powerups' | 'objectives'; index: number; x: number; y: number }
   | { type: 'UPDATE_WAYPOINT_POS'; bgId: string; routeIdx: number; pointIdx: number; x: number; y: number }

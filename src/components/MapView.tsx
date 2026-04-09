@@ -102,14 +102,14 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
   return (
     <div className="flex-1 flex overflow-hidden min-h-0 relative">
       <button
-        className="absolute top-1/2 left-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] text-[.8rem] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-r -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
+        className="absolute top-1/2 left-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-r -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
         onClick={onToggleSidebar}
         title="Toggle sidebar"
       >
         {sidebarVisible ? '◀' : '▶'}
       </button>
       <button
-        className="absolute top-1/2 right-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] text-[.8rem] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-l -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
+        className="absolute top-1/2 right-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-l -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
         onClick={onToggleTips}
         title="Toggle tips"
       >
@@ -139,15 +139,15 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
 
           {(!bg.map || mapError) && (
             <div className="w-[580px] h-[460px] max-w-full border-2 border-dashed border-[var(--border-default)] rounded flex flex-col items-center justify-center gap-2.5 text-[var(--text-muted)]" style={{ background: 'var(--map-ph-bg)' }}>
-              <div className="text-[1.1rem] text-[var(--text-secondary)] font-semibold">{bg.name}</div>
-              <div className="text-[.8rem] text-[var(--text-muted)]">Map image unavailable &mdash; check warcraft.wiki.gg</div>
+              <div className="text-lg text-[var(--text-secondary)] font-semibold">{bg.name}</div>
+              <div className="text-[var(--text-muted)]">Map image unavailable &mdash; check warcraft.wiki.gg</div>
             </div>
           )}
 
           {bg.map && !mapLoaded && !mapError && (
             <div className="w-[580px] h-[460px] max-w-full border-2 border-dashed border-[var(--border-default)] rounded flex flex-col items-center justify-center gap-2.5 text-[var(--text-muted)]" style={{ background: 'var(--map-ph-bg)' }}>
-              <div className="text-[1.1rem] text-[var(--text-secondary)] font-semibold">{bg.name}</div>
-              <div className="text-[.8rem] text-[var(--text-muted)]">Loading map...</div>
+              <div className="text-lg text-[var(--text-secondary)] font-semibold">{bg.name}</div>
+              <div className="text-[var(--text-muted)]">Loading map...</div>
             </div>
           )}
 
