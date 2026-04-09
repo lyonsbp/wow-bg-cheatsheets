@@ -171,4 +171,22 @@ describe('BattlegroundContext', () => {
     // Other fields unchanged
     expect(result.current.state.bgs['wsg']!.graveyards.length).toBeGreaterThan(0);
   });
+
+  it('SET_STROKE_WIDTH updates stroke width', () => {
+    const { result } = renderHook(() => useBG(), { wrapper });
+    expect(result.current.state.strokeWidth).toBe(1);
+    act(() => result.current.dispatch({ type: 'SET_STROKE_WIDTH', width: 1.5 }));
+    expect(result.current.state.strokeWidth).toBe(1.5);
+  });
+
+  it('ADD_ROUTE with dotted flag preserves d property', () => {
+    const { result } = renderHook(() => useBG(), { wrapper });
+    act(() => result.current.dispatch({
+      type: 'ADD_ROUTE', bgId: 'wsg',
+      route: { n: 'Dotted Route', pts: [[10, 10], [90, 90]], c: '#ff9933', d: true },
+    }));
+    const routes = result.current.state.bgs['wsg']!.routes;
+    expect(routes.at(-1)!.d).toBe(true);
+    expect(routes.at(-1)!.c).toBe('#ff9933');
+  });
 });

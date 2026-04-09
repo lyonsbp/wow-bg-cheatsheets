@@ -6,13 +6,17 @@ interface Props {
   data: RouteData;
   index: number;
   squigglyMode: boolean;
+  strokeWidth: number;
   onWpDragStart?: (e: React.MouseEvent, ridx: number, pidx: number) => void;
   onWpContextMenu?: (e: React.MouseEvent, ridx: number, pidx: number) => void;
   onRouteContextMenu?: (e: React.MouseEvent, ridx: number) => void;
   onInsertWaypoint?: (e: React.MouseEvent, ridx: number) => void;
 }
 
-export default function Route({ data, index, squigglyMode, onWpDragStart, onWpContextMenu, onRouteContextMenu, onInsertWaypoint }: Props) {
+export default function Route({ data, index, squigglyMode, strokeWidth, onWpDragStart, onWpContextMenu, onRouteContextMenu, onInsertWaypoint }: Props) {
+  const sw = strokeWidth;
+  const dash = data.d ? `${2 * sw},${1.5 * sw}` : undefined;
+
   const wps = data.pts.map((p, pi) => (
     <circle
       key={pi}
@@ -21,10 +25,10 @@ export default function Route({ data, index, squigglyMode, onWpDragStart, onWpCo
       data-pidx={pi}
       cx={p[0]}
       cy={p[1]}
-      r="1.8"
+      r="1.0"
       fill={data.c}
       stroke="#fff"
-      strokeWidth=".4"
+      strokeWidth=".3"
       opacity=".85"
       onMouseDown={(e) => onWpDragStart?.(e, index, pi)}
       onContextMenu={(e) => onWpContextMenu?.(e, index, pi)}
@@ -41,9 +45,10 @@ export default function Route({ data, index, squigglyMode, onWpDragStart, onWpCo
     return (
       <g className="lrte" data-ridx={index} onContextMenu={handleContextMenu}>
         <path className="rte-glow" d={d} fill="none" stroke={data.c}
-          strokeWidth="3" opacity=".15" />
+          strokeWidth={3 * sw} opacity=".15" strokeDasharray={dash} />
         <path className="rte-line" d={d} fill="none" stroke={data.c}
-          strokeWidth="1.1" opacity=".85" strokeLinecap="round" strokeLinejoin="round" />
+          strokeWidth={1.1 * sw} opacity=".85" strokeLinecap="round" strokeLinejoin="round"
+          strokeDasharray={dash} />
         <polyline points={pts(data.pts)} fill="none" stroke="transparent"
           strokeWidth="4" className="rte-hit" data-ridx={index}
           onClick={(e) => onInsertWaypoint?.(e, index)} />
@@ -56,10 +61,11 @@ export default function Route({ data, index, squigglyMode, onWpDragStart, onWpCo
   return (
     <g className="lrte" data-ridx={index} onContextMenu={handleContextMenu}>
       <polyline className="rte-glow" points={pts(data.pts)} fill="none" stroke={data.c}
-        strokeWidth="2.25" opacity=".12" />
+        strokeWidth={2.25 * sw} opacity=".12" strokeDasharray={dash} />
       <polyline className="rte-line" points={pts(data.pts)} fill="none" stroke={data.c}
-        strokeWidth=".6" opacity=".75" strokeLinecap="round" strokeLinejoin="round"
-        markerEnd={`url(#arr-${data.c.slice(1)})`} />
+        strokeWidth={0.6 * sw} opacity=".75" strokeLinecap="round" strokeLinejoin="round"
+        markerEnd={data.d ? undefined : `url(#arr-${data.c.slice(1)})`}
+        strokeDasharray={dash} />
       <polyline points={pts(data.pts)} fill="none" stroke="transparent"
         strokeWidth="4" className="rte-hit" data-ridx={index}
         onClick={(e) => onInsertWaypoint?.(e, index)} />

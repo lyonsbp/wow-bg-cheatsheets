@@ -43,11 +43,21 @@ describe('App', () => {
     expect(screen.getByText(/Tunnel \(center\) is fastest/)).toBeInTheDocument();
   });
 
-  it('renders the legend', () => {
+  it('renders the legend with dynamic route names', () => {
     render(<App />);
     expect(screen.getByText('Legend')).toBeInTheDocument();
     expect(screen.getByText('Alliance Graveyard')).toBeInTheDocument();
     expect(screen.getByText('Horde Graveyard')).toBeInTheDocument();
+    // WSG route names should appear in legend (use selector to avoid SVG title matches)
+    expect(screen.getByText('Tunnel (Center)', { selector: '.leg-row' })).toBeInTheDocument();
+    expect(screen.getByText('Upper Field (Ramp)', { selector: '.leg-row' })).toBeInTheDocument();
+    expect(screen.getByText('GY Side (Lower)', { selector: '.leg-row' })).toBeInTheDocument();
+  });
+
+  it('renders stroke width slider', () => {
+    render(<App />);
+    expect(screen.getByText('Thickness')).toBeInTheDocument();
+    expect(screen.getByTitle('Route thickness')).toBeInTheDocument();
   });
 
   it('renders zoom controls', () => {

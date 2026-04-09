@@ -26,8 +26,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"Tunnel (Center)",     pts:[[16,57],[50,57],[84,54]], c:"#ffd700"},
-      {n:"Upper Field (Ramp)",  pts:[[16,28],[50,32],[84,36]], c:"#4499ff"},
-      {n:"GY Side (Lower)",     pts:[[16,72],[50,66],[84,63]], c:"#88ff44"}
+      {n:"Upper Field (Ramp)",  pts:[[16,28],[50,32],[84,36]], c:"#00cccc"},
+      {n:"GY Side (Lower)",     pts:[[16,72],[50,66],[84,63]], c:"#44cc44"}
     ],
     objectives:[
       {n:"Alliance Flag Room",x:14,y:13,t:"flag",f:"alliance"},
@@ -66,8 +66,8 @@ const BGS: BGMap = {
       {n:"BS → Farm",     pts:[[50,50],[80,76]], c:"#ffd700"},
       {n:"BS → Mine",     pts:[[50,50],[80,24]], c:"#ffd700"},
       {n:"BS → LM",       pts:[[50,50],[20,74]], c:"#ffd700"},
-      {n:"LM → Farm",     pts:[[20,74],[80,76]], c:"#4499ff"},
-      {n:"Stables → Mine",pts:[[20,24],[80,24]], c:"#4499ff"}
+      {n:"LM → Farm",     pts:[[20,74],[80,76]], c:"#00cccc"},
+      {n:"Stables → Mine",pts:[[20,24],[80,24]], c:"#00cccc"}
     ],
     objectives:[
       {n:"Stables",     x:20,y:24,t:"node"},
@@ -106,10 +106,10 @@ const BGS: BGMap = {
       {n:"Berserking (SW)",    x:36,y:63,t:"berserk"}
     ],
     routes:[
-      {n:"Alliance → NW",  pts:[[50,8],[22,25]], c:"#4499ff"},
-      {n:"Alliance → NE",  pts:[[50,8],[78,25]], c:"#4499ff"},
-      {n:"Horde → SW",     pts:[[50,92],[22,75]], c:"#ff4444"},
-      {n:"Horde → SE",     pts:[[50,92],[78,75]], c:"#ff4444"},
+      {n:"Alliance → NW",  pts:[[50,8],[22,25]], c:"#00cccc"},
+      {n:"Alliance → NE",  pts:[[50,8],[78,25]], c:"#00cccc"},
+      {n:"Horde → SW",     pts:[[50,92],[22,75]], c:"#ff9933"},
+      {n:"Horde → SE",     pts:[[50,92],[78,75]], c:"#ff9933"},
       {n:"Mid → NW",       pts:[[50,50],[22,25]], c:"#ffd700"},
       {n:"Mid → NE",       pts:[[50,50],[78,25]], c:"#ffd700"},
       {n:"Mid → SW",       pts:[[50,50],[22,75]], c:"#ffd700"},
@@ -149,11 +149,11 @@ const BGS: BGMap = {
       {n:"Berserking (C-E)", x:63,y:53,t:"berserk"}
     ],
     routes:[
-      {n:"Alliance Open",  pts:[[14,12],[17,40],[50,55]], c:"#4499ff"},
-      {n:"Horde Open",     pts:[[86,88],[78,66],[50,55]], c:"#ff4444"},
+      {n:"Alliance Open",  pts:[[14,12],[17,40],[50,55]], c:"#00cccc"},
+      {n:"Horde Open",     pts:[[86,88],[78,66],[50,55]], c:"#ff9933"},
       {n:"LH → WW",        pts:[[17,40],[50,55]], c:"#ffd700"},
       {n:"WW → Mine",      pts:[[50,55],[78,66]], c:"#ffd700"},
-      {n:"LH → Mine",      pts:[[17,40],[78,66]], c:"#88ff44"}
+      {n:"LH → Mine",      pts:[[17,40],[78,66]], c:"#44cc44"}
     ],
     objectives:[
       {n:"Lighthouse",  x:17,y:40,t:"node"},
@@ -187,8 +187,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"Bridge (Center)",  pts:[[20,50],[50,50],[80,50]], c:"#ffd700"},
-      {n:"North Pass",       pts:[[20,28],[50,30],[80,32]], c:"#4499ff"},
-      {n:"South Pass",       pts:[[20,68],[50,65],[80,72]], c:"#88ff44"}
+      {n:"North Pass",       pts:[[20,28],[50,30],[80,32]], c:"#00cccc"},
+      {n:"South Pass",       pts:[[20,68],[50,65],[80,72]], c:"#44cc44"}
     ],
     objectives:[
       {n:"Alliance Flag",  x:10,y:50,t:"flag",f:"alliance"},
@@ -220,8 +220,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"NW Track",  pts:[[50,58],[35,44],[22,30],[12,18]], c:"#ffd700"},
-      {n:"N Track",   pts:[[50,58],[50,38],[50,18]],         c:"#4499ff"},
-      {n:"NE Track",  pts:[[50,58],[65,44],[78,30],[88,18]], c:"#88ff44"}
+      {n:"N Track",   pts:[[50,58],[50,38],[50,18]],         c:"#00cccc"},
+      {n:"NE Track",  pts:[[50,58],[65,44],[78,30],[88,18]], c:"#44cc44"}
     ],
     objectives:[
       {n:"Cart Spawn",    x:50,y:58,t:"node"},
@@ -259,8 +259,8 @@ const BGS: BGMap = {
     routes:[
       {n:"N → Center",  pts:[[50,20],[50,50]], c:"#ffd700"},
       {n:"S → Center",  pts:[[50,80],[50,50]], c:"#ffd700"},
-      {n:"W → Center",  pts:[[20,50],[50,50]], c:"#4499ff"},
-      {n:"E → Center",  pts:[[80,50],[50,50]], c:"#4499ff"}
+      {n:"W → Center",  pts:[[20,50],[50,50]], c:"#00cccc"},
+      {n:"E → Center",  pts:[[80,50],[50,50]], c:"#00cccc"}
     ],
     objectives:[
       {n:"Orb NW Pedestal", x:28,y:30,t:"orb"},
@@ -299,10 +299,10 @@ const BGS: BGMap = {
       {n:"Speed (NW)",     x:34,y:20,t:"speed"}
     ],
     routes:[
-      {n:"Alliance → Quarry",  pts:[[50,8],[24,28]],  c:"#4499ff"},
-      {n:"Alliance → Shrine",  pts:[[50,8],[76,28]],  c:"#4499ff"},
-      {n:"Horde → Ruins",      pts:[[50,92],[24,72]], c:"#ff4444"},
-      {n:"Horde → Farm",       pts:[[50,92],[76,72]], c:"#ff4444"},
+      {n:"Alliance → Quarry",  pts:[[50,8],[24,28]],  c:"#00cccc"},
+      {n:"Alliance → Shrine",  pts:[[50,8],[76,28]],  c:"#00cccc"},
+      {n:"Horde → Ruins",      pts:[[50,92],[24,72]], c:"#ff9933"},
+      {n:"Horde → Farm",       pts:[[50,92],[76,72]], c:"#ff9933"},
       {n:"Quarry → Market",    pts:[[24,28],[50,36]], c:"#ffd700"},
       {n:"Shrine → Market",    pts:[[76,28],[50,36]], c:"#ffd700"},
       {n:"Ruins → Market",     pts:[[24,72],[50,36]], c:"#ffd700"},
@@ -341,8 +341,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"North Cart Track", pts:[[18,35],[50,25],[82,35]], c:"#ffd700"},
-      {n:"South Cart Track", pts:[[18,65],[50,75],[82,65]], c:"#4499ff"},
-      {n:"Aerial Tram",      pts:[[20,15],[50,12],[80,15]], c:"#cc88ff"}
+      {n:"South Cart Track", pts:[[18,65],[50,75],[82,65]], c:"#00cccc"},
+      {n:"Aerial Tram",      pts:[[20,15],[50,12],[80,15]], c:"#cc66ff"}
     ],
     objectives:[
       {n:"Crystal Spawn",         x:50,y:50,t:"orb"},
@@ -377,8 +377,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"Main Diagonal",  pts:[[22,15],[50,50],[78,85]], c:"#ffd700"},
-      {n:"West Flank",     pts:[[22,15],[22,65],[50,80]], c:"#4499ff"},
-      {n:"East Flank",     pts:[[78,85],[78,35],[50,20]], c:"#88ff44"}
+      {n:"West Flank",     pts:[[22,15],[22,65],[50,80]], c:"#00cccc"},
+      {n:"East Flank",     pts:[[78,85],[78,35],[50,20]], c:"#44cc44"}
     ],
     objectives:[
       {n:"Node Zone A", x:30,y:35,t:"zone"},
@@ -412,9 +412,9 @@ const BGS: BGMap = {
     ],
     powerups:[],
     routes:[
-      {n:"Alliance Rush (East)",  pts:[[28,18],[38,36],[50,50],[60,65],[72,82]], c:"#4499ff"},
-      {n:"Alliance Rush (West)",  pts:[[28,18],[24,40],[26,65],[70,82]],          c:"#88ff44"},
-      {n:"Horde Rush",            pts:[[72,82],[60,65],[50,50],[38,36],[28,18]],  c:"#ff4444"}
+      {n:"Alliance Rush (East)",  pts:[[28,18],[38,36],[50,50],[60,65],[72,82]], c:"#00cccc"},
+      {n:"Alliance Rush (West)",  pts:[[28,18],[24,40],[26,65],[70,82]],          c:"#44cc44"},
+      {n:"Horde Rush",            pts:[[72,82],[60,65],[50,50],[38,36],[28,18]],  c:"#ff9933"}
     ],
     objectives:[
       {n:"Dun Baldar (Alliance Base)", x:25,y:10,t:"base",f:"alliance"},
@@ -452,10 +452,10 @@ const BGS: BGMap = {
     ],
     powerups:[],
     routes:[
-      {n:"Alliance → Workshop", pts:[[22,18],[50,50]],         c:"#4499ff"},
-      {n:"Horde → Workshop",    pts:[[78,82],[50,50]],         c:"#ff4444"},
+      {n:"Alliance → Workshop", pts:[[22,18],[50,50]],         c:"#00cccc"},
+      {n:"Horde → Workshop",    pts:[[78,82],[50,50]],         c:"#ff9933"},
       {n:"Docks Route (W)",     pts:[[22,18],[12,55],[50,50]], c:"#ffd700"},
-      {n:"Hangar Route (N)",    pts:[[22,18],[78,22],[78,82]], c:"#88ff44"},
+      {n:"Hangar Route (N)",    pts:[[22,18],[78,22],[78,82]], c:"#44cc44"},
       {n:"Workshop → Horde",    pts:[[50,50],[78,82]],         c:"#ffd700"}
     ],
     objectives:[
@@ -497,8 +497,8 @@ const BGS: BGMap = {
     ],
     routes:[
       {n:"Path of Predation (Main)",  pts:[[25,75],[50,50],[75,25]], c:"#ffd700"},
-      {n:"West Flank",                pts:[[25,75],[15,50],[25,25]], c:"#4499ff"},
-      {n:"East Flank",                pts:[[75,25],[85,50],[75,75]], c:"#ff4444"}
+      {n:"West Flank",                pts:[[25,75],[15,50],[25,25]], c:"#00cccc"},
+      {n:"East Flank",                pts:[[75,25],[85,50],[75,75]], c:"#ff9933"}
     ],
     objectives:[
       {n:"Hate Spire (Alliance Boss)",  x:22,y:28,t:"base",f:"alliance"},

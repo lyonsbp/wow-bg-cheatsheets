@@ -52,6 +52,15 @@ describe('battlegrounds data', () => {
     }
   });
 
+  it('route colors use the approved palette (no red/blue)', () => {
+    const allowed = new Set(['#ff9933', '#ffd700', '#44cc44', '#00cccc', '#cc66ff', '#ff66aa']);
+    for (const [id, bg] of Object.entries(BGS)) {
+      for (const r of bg.routes) {
+        expect(allowed.has(r.c), `${id} route "${r.n}" has unapproved color ${r.c}`).toBe(true);
+      }
+    }
+  });
+
   it('map paths point to local files or are null', () => {
     for (const bg of Object.values(BGS)) {
       if (bg.map !== null) {

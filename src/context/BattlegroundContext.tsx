@@ -12,6 +12,7 @@ const initialState: AppState = {
   editMode: false,
   squigglyMode: false,
   zoomScale: 1,
+  strokeWidth: 1,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -33,6 +34,9 @@ function reducer(state: AppState, action: AppAction): AppState {
 
     case 'SET_ZOOM':
       return { ...state, zoomScale: action.scale };
+
+    case 'SET_STROKE_WIDTH':
+      return { ...state, strokeWidth: action.width };
 
     case 'UPDATE_BG_DATA': {
       const { bgId, field, data } = action;

@@ -43,7 +43,7 @@ interface Props {
 
 export default function SvgOverlay({ onMapClick, svgRef }: Props) {
   const { state, dispatch } = useBG();
-  const { bgs, curBG, layers, editMode, squigglyMode } = state;
+  const { bgs, curBG, layers, editMode, squigglyMode, strokeWidth } = state;
   const bg = bgs[curBG];
 
   const dragRef = useRef<DragState | null>(null);
@@ -247,6 +247,7 @@ export default function SvgOverlay({ onMapClick, svgRef }: Props) {
             data={r}
             index={i}
             squigglyMode={squigglyMode}
+            strokeWidth={strokeWidth}
             onWpDragStart={handleWpDragStart}
             onWpContextMenu={handleWpContext}
             onRouteContextMenu={handleRouteContext}

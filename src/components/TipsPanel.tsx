@@ -1,6 +1,7 @@
 import { useBG } from '../context/BattlegroundContext';
+import type { Route } from '../types';
 
-function Legend() {
+function Legend({ routes }: { routes: Route[] }) {
   return (
     <div className="leg">
       <div className="leg-hd">Legend</div>
@@ -11,9 +12,19 @@ function Legend() {
       <div className="leg-row"><div className="leg-dia" style={{ background: '#ff6600' }}></div>Berserking (+30% dmg)</div>
       <div className="leg-row"><div className="leg-dia" style={{ background: '#44dd88' }}></div>Restoration (HP/mana)</div>
       <div className="leg-row"><div className="leg-star">★</div>Capture Node / Objective</div>
-      <div className="leg-row"><div className="leg-line" style={{ background: '#ffd700' }}></div>Primary Route</div>
-      <div className="leg-row"><div className="leg-line" style={{ background: '#4499ff', opacity: 0.7 }}></div>Secondary Route</div>
-      <div className="leg-row"><div className="leg-line" style={{ background: '#88ff44', opacity: 0.7 }}></div>Alternate Route</div>
+      {routes.map((r, i) => (
+        <div key={i} className="leg-row">
+          <div
+            className="leg-line"
+            style={{
+              background: r.d ? 'transparent' : r.c,
+              borderBottom: r.d ? `2px dashed ${r.c}` : undefined,
+              height: r.d ? 0 : undefined,
+            }}
+          ></div>
+          {r.n}
+        </div>
+      ))}
     </div>
   );
 }
@@ -83,7 +94,7 @@ export default function TipsPanel({ visible }: Props) {
           ))
         )}
       </div>
-      <Legend />
+      <Legend routes={bg.routes} />
     </div>
   );
 }

@@ -22,6 +22,7 @@ export interface Route {
   n: string;
   pts: [number, number][];
   c: string;
+  d?: boolean;
 }
 
 export interface Objective {
@@ -63,6 +64,7 @@ export interface AppState {
   editMode: boolean;
   squigglyMode: boolean;
   zoomScale: number;
+  strokeWidth: number;
 }
 
 export type AppAction =
@@ -71,6 +73,7 @@ export type AppAction =
   | { type: 'TOGGLE_EDIT' }
   | { type: 'TOGGLE_SQUIGGLY' }
   | { type: 'SET_ZOOM'; scale: number }
+  | { type: 'SET_STROKE_WIDTH'; width: number }
   | { type: 'UPDATE_BG_DATA'; bgId: string; field: keyof Battleground; data: Battleground[keyof Battleground] }
   | { type: 'UPDATE_MARKER_POS'; bgId: string; layer: 'graveyards' | 'powerups' | 'objectives'; index: number; x: number; y: number }
   | { type: 'UPDATE_WAYPOINT_POS'; bgId: string; routeIdx: number; pointIdx: number; x: number; y: number }

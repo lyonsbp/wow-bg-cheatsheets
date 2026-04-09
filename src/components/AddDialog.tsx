@@ -39,13 +39,20 @@ const SUBMENUS: Record<SubMenuType, SubMenu> = {
     ]
   },
   rte: {
-    title: 'Route Color',
+    title: 'Route Style',
     items: [
-      { key: 'rte-#ffd700', label: '● Primary (Gold)' },
-      { key: 'rte-#4499ff', label: '● Secondary (Blue)' },
-      { key: 'rte-#88ff44', label: '● Alternate (Green)' },
-      { key: 'rte-#ff4444', label: '● Horde (Red)' },
-      { key: 'rte-#cc88ff', label: '● Special (Purple)' },
+      { key: 'rte-#ff9933', label: '● Orange' },
+      { key: 'rte-#ffd700', label: '● Yellow' },
+      { key: 'rte-#44cc44', label: '● Green' },
+      { key: 'rte-#00cccc', label: '● Cyan' },
+      { key: 'rte-#cc66ff', label: '● Purple' },
+      { key: 'rte-#ff66aa', label: '● Pink' },
+      { key: 'rte-#ff9933-d', label: '◌ Orange (Dotted)' },
+      { key: 'rte-#ffd700-d', label: '◌ Yellow (Dotted)' },
+      { key: 'rte-#44cc44-d', label: '◌ Green (Dotted)' },
+      { key: 'rte-#00cccc-d', label: '◌ Cyan (Dotted)' },
+      { key: 'rte-#cc66ff-d', label: '◌ Purple (Dotted)' },
+      { key: 'rte-#ff66aa-d', label: '◌ Pink (Dotted)' },
     ]
   },
   obj: {
@@ -93,10 +100,12 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
     const bgId = state.curBG;
 
     if (type === 'rte') {
-      const color = key.substring(4);
+      const rteParts = key.substring(4); // e.g. "#ff9933" or "#ff9933-d"
+      const dotted = rteParts.endsWith('-d');
+      const color = dotted ? rteParts.slice(0, -2) : rteParts;
       const name = prompt('Route name:', 'New Route');
       if (!name) { onClose(); return; }
-      dispatch({ type: 'ADD_ROUTE', bgId, route: { n: name, pts: [[x, y], [Math.min(x + 15, 95), y]], c: color } });
+      dispatch({ type: 'ADD_ROUTE', bgId, route: { n: name, pts: [[x, y], [Math.min(x + 15, 95), y]], c: color, ...(dotted ? { d: true } : {}) } });
       onClose();
       return;
     }
