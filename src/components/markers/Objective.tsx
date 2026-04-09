@@ -8,8 +8,8 @@ function ObjShape({ type, color }: { type: ObjectiveType; faction?: Faction; col
   if (type === 'flag') {
     return (
       <>
-        <line x1="0" y1="-3.5" x2="0" y2="3" stroke={color} strokeWidth=".6" />
-        <polygon points="0,-3.5 3,-2 0,-.5" fill={color} opacity=".9" />
+        <line x1="0" y1="-2.5" x2="0" y2="2" stroke={color} strokeWidth=".45" />
+        <polygon points="0,-2.5 2,-1.4 0,-.3" fill={color} opacity=".9" />
       </>
     );
   }
