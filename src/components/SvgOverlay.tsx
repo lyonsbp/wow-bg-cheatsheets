@@ -43,7 +43,7 @@ interface Props {
 
 export default function SvgOverlay({ onMapClick, svgRef }: Props) {
   const { state, dispatch } = useBG();
-  const { bgs, curBG, layers, editMode, squigglyMode, strokeWidth } = state;
+  const { bgs, curBG, layers, editMode, squigglyMode, strokeWidth, hiddenItems } = state;
   const bg = bgs[curBG];
 
   const dragRef = useRef<DragState | null>(null);
@@ -242,50 +242,54 @@ export default function SvgOverlay({ onMapClick, svgRef }: Props) {
       <defs>{buildDefs(bg.routes)}</defs>
       <g style={{ display: layers.rte ? '' : 'none' }}>
         {bg.routes.map((r, i) => (
-          <Route
-            key={i}
-            data={r}
-            index={i}
-            squigglyMode={squigglyMode}
-            strokeWidth={strokeWidth}
-            onWpDragStart={handleWpDragStart}
-            onWpContextMenu={handleWpContext}
-            onRouteContextMenu={handleRouteContext}
-            onInsertWaypoint={handleInsertWaypoint}
-          />
+          <g key={i} style={{ display: hiddenItems.has(`rte-${i}`) ? 'none' : '' }}>
+            <Route
+              data={r}
+              index={i}
+              squigglyMode={squigglyMode}
+              strokeWidth={strokeWidth}
+              onWpDragStart={handleWpDragStart}
+              onWpContextMenu={handleWpContext}
+              onRouteContextMenu={handleRouteContext}
+              onInsertWaypoint={handleInsertWaypoint}
+            />
+          </g>
         ))}
       </g>
       <g style={{ display: layers.gy ? '' : 'none' }}>
         {bg.graveyards.map((g, i) => (
-          <Graveyard
-            key={i}
-            data={g}
-            index={i}
-            onDragStart={handleDragStart}
-            onContextMenu={handleMarkerContext}
-          />
+          <g key={i} style={{ display: hiddenItems.has(`gy-${i}`) ? 'none' : '' }}>
+            <Graveyard
+              data={g}
+              index={i}
+              onDragStart={handleDragStart}
+              onContextMenu={handleMarkerContext}
+            />
+          </g>
         ))}
       </g>
       <g style={{ display: layers.buf ? '' : 'none' }}>
         {bg.powerups.map((b, i) => (
-          <Powerup
-            key={i}
-            data={b}
-            index={i}
-            onDragStart={handleDragStart}
-            onContextMenu={handleMarkerContext}
-          />
+          <g key={i} style={{ display: hiddenItems.has(`buf-${i}`) ? 'none' : '' }}>
+            <Powerup
+              data={b}
+              index={i}
+              onDragStart={handleDragStart}
+              onContextMenu={handleMarkerContext}
+            />
+          </g>
         ))}
       </g>
       <g style={{ display: layers.obj ? '' : 'none' }}>
         {bg.objectives.map((o, i) => (
-          <Objective
-            key={i}
-            data={o}
-            index={i}
-            onDragStart={handleDragStart}
-            onContextMenu={handleMarkerContext}
-          />
+          <g key={i} style={{ display: hiddenItems.has(`obj-${i}`) ? 'none' : '' }}>
+            <Objective
+              data={o}
+              index={i}
+              onDragStart={handleDragStart}
+              onContextMenu={handleMarkerContext}
+            />
+          </g>
         ))}
       </g>
     </svg>

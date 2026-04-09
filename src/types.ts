@@ -65,6 +65,7 @@ export interface AppState {
   squigglyMode: boolean;
   zoomScale: number;
   strokeWidth: number;
+  hiddenItems: Set<string>;
 }
 
 export type AppAction =
@@ -74,6 +75,7 @@ export type AppAction =
   | { type: 'TOGGLE_SQUIGGLY' }
   | { type: 'SET_ZOOM'; scale: number }
   | { type: 'SET_STROKE_WIDTH'; width: number }
+  | { type: 'TOGGLE_ITEM_VISIBILITY'; key: string }
   | { type: 'UPDATE_BG_DATA'; bgId: string; field: keyof Battleground; data: Battleground[keyof Battleground] }
   | { type: 'UPDATE_MARKER_POS'; bgId: string; layer: 'graveyards' | 'powerups' | 'objectives'; index: number; x: number; y: number }
   | { type: 'UPDATE_WAYPOINT_POS'; bgId: string; routeIdx: number; pointIdx: number; x: number; y: number }

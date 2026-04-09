@@ -13,12 +13,13 @@ const initialState: AppState = {
   squigglyMode: false,
   zoomScale: 1,
   strokeWidth: 1,
+  hiddenItems: new Set<string>(),
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SELECT_BG':
-      return { ...state, curBG: action.id };
+      return { ...state, curBG: action.id, hiddenItems: new Set<string>() };
 
     case 'TOGGLE_LAYER':
       return {
@@ -37,6 +38,16 @@ function reducer(state: AppState, action: AppAction): AppState {
 
     case 'SET_STROKE_WIDTH':
       return { ...state, strokeWidth: action.width };
+
+    case 'TOGGLE_ITEM_VISIBILITY': {
+      const next = new Set(state.hiddenItems);
+      if (next.has(action.key)) {
+        next.delete(action.key);
+      } else {
+        next.add(action.key);
+      }
+      return { ...state, hiddenItems: next };
+    }
 
     case 'UPDATE_BG_DATA': {
       const { bgId, field, data } = action;

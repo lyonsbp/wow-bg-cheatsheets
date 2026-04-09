@@ -1,30 +1,61 @@
 import { useBG } from '../context/BattlegroundContext';
-import type { Route } from '../types';
+import type { Battleground } from '../types';
 
-function Legend({ routes }: { routes: Route[] }) {
+const rowBase = "flex items-center gap-1.5 mb-[5px] text-[var(--text-secondary)] cursor-pointer select-none transition-opacity duration-150";
+
+function Legend({ bg }: { bg: Battleground }) {
+  const { state, dispatch } = useBG();
+  const { hiddenItems } = state;
+
+  const toggle = (key: string) => dispatch({ type: 'TOGGLE_ITEM_VISIBILITY', key });
+  const isHidden = (key: string) => hiddenItems.has(key);
+
   return (
-    <div className="mt-3.5">
-      <div className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-wide mb-1.5 pb-[3px] border-b border-[var(--border-default)]">Legend</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: '#4488cc' }}></div>Alliance Graveyard</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: '#cc3344' }}></div>Horde Graveyard</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: '#7a8898' }}></div>Neutral Graveyard</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: '#00e5ff' }}></div>Speed Buff (+100% MS)</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: '#ff6600' }}></div>Berserking (+30% dmg)</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: '#44dd88' }}></div>Restoration (HP/mana)</div>
-      <div className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium"><div className="w-3 h-3 shrink-0 flex items-center justify-center text-[.75rem]">★</div>Capture Node / Objective</div>
-      {routes.map((r, i) => (
-        <div key={i} className="flex items-center gap-1.5 mb-[5px] text-[.8rem] text-[var(--text-secondary)] font-medium">
-          <div
-            className="w-[18px] h-[3px] shrink-0 rounded-sm"
-            style={{
-              background: r.d ? 'transparent' : r.c,
-              borderBottom: r.d ? `2px dashed ${r.c}` : undefined,
-              height: r.d ? 0 : undefined,
-            }}
-          ></div>
-          {r.n}
-        </div>
-      ))}
+    <div className="mt-3 font-medium">
+      <div className="font-semibold text-lg text-[var(--text-muted)] uppercase tracking-wide mb-1.5 pb-[3px] border-b border-[var(--border-default)]">Legend</div>
+      {bg.graveyards.map((g, i) => {
+        const key = `gy-${i}`;
+        return (
+          <div key={key} className={`${rowBase} ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
+            <div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: g.f === 'alliance' ? '#4488cc' : g.f === 'horde' ? '#cc3344' : '#7a8898' }}></div>
+            {g.n}
+          </div>
+        );
+      })}
+      {bg.powerups.map((p, i) => {
+        const key = `buf-${i}`;
+        return (
+          <div key={key} className={`${rowBase} ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
+            <div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: p.t === 'speed' ? '#00e5ff' : p.t === 'berserk' ? '#ff6600' : '#44dd88' }}></div>
+            {p.n}
+          </div>
+        );
+      })}
+      {bg.objectives.map((o, i) => {
+        const key = `obj-${i}`;
+        return (
+          <div key={key} className={`${rowBase} ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
+            <div className="w-3 h-3 shrink-0 flex items-center justify-center text-[.75rem]">★</div>
+            {o.n}
+          </div>
+        );
+      })}
+      {bg.routes.map((r, i) => {
+        const key = `rte-${i}`;
+        return (
+          <div key={key} className={`${rowBase} ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
+            <div
+              className="w-[18px] h-[3px] shrink-0 rounded-sm"
+              style={{
+                background: r.d ? 'transparent' : r.c,
+                borderBottom: r.d ? `2px dashed ${r.c}` : undefined,
+                height: r.d ? 0 : undefined,
+              }}
+            ></div>
+            {r.n}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -94,7 +125,7 @@ export default function TipsPanel({ visible }: Props) {
           ))
         )}
       </div>
-      <Legend routes={bg.routes} />
+      <Legend bg={bg} />
     </div>
   );
 }

@@ -45,15 +45,14 @@ describe('App', () => {
     expect(screen.getByText(/Tunnel \(center\) is fastest/)).toBeInTheDocument();
   });
 
-  it('renders the legend with dynamic route names', () => {
+  it('renders the legend with all BG items', () => {
     render(<App />);
     expect(screen.getByText('Legend')).toBeInTheDocument();
-    expect(screen.getByText('Alliance Graveyard')).toBeInTheDocument();
-    expect(screen.getByText('Horde Graveyard')).toBeInTheDocument();
-    // WSG route names should appear in legend (use getAllBy since SVG titles also match)
+    // WSG-specific items should appear in legend
+    expect(screen.getAllByText('Alliance GY').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Horde GY').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Tunnel (Center)').length).toBeGreaterThanOrEqual(2); // SVG title + legend
-    expect(screen.getAllByText('Upper Field (Ramp)').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getAllByText('GY Side (Lower)').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText('Alliance Flag Room').length).toBeGreaterThanOrEqual(2);
   });
 
   it('renders stroke width slider', () => {
