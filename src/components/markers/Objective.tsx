@@ -43,7 +43,7 @@ export default function Objective({ data, index, onDragStart, onContextMenu }: P
       onMouseDown={(e) => onDragStart?.(e, 'objectives', index)}
       onContextMenu={(e) => onContextMenu?.(e, 'objectives', index)}
     >
-      <title>{data.n}</title>
+      <title>{data.n}{data.f ? ` (${data.f.charAt(0).toUpperCase() + data.f.slice(1)})` : ''} — {data.t.charAt(0).toUpperCase() + data.t.slice(1)}</title>
       <ObjShape type={data.t} faction={data.f} color={c} />
     </g>
   );

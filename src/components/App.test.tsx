@@ -50,10 +50,11 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByText('Legend')).toBeInTheDocument();
     // WSG-specific items should appear in legend
-    expect(screen.getAllByText('Alliance GY').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Horde GY').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Tunnel (Center)').length).toBeGreaterThanOrEqual(2); // SVG title + legend
-    expect(screen.getAllByText('Alliance Flag Room').length).toBeGreaterThanOrEqual(2);
+    // Legend shows BG-specific item names from current WSG data
+    expect(screen.getByText('Alliance Graveyard')).toBeInTheDocument();
+    expect(screen.getByText('Horde Graveyard')).toBeInTheDocument();
+    expect(screen.getAllByText('Tunnel').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Alliance Flag').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders stroke width slider', () => {

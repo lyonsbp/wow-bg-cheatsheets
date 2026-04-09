@@ -1,6 +1,7 @@
 import type { Route as RouteData } from '../../types';
 import { pts } from '../../utils/geometry';
 import { squigglyPath } from '../../utils/squiggly';
+import { ROUTE_COLORS } from '../../utils/constants';
 
 interface Props {
   data: RouteData;
@@ -16,6 +17,8 @@ interface Props {
 export default function Route({ data, index, squigglyMode, strokeWidth, onWpDragStart, onWpContextMenu, onRouteContextMenu, onInsertWaypoint }: Props) {
   const sw = strokeWidth;
   const dash = data.d ? `${2 * sw},${1.5 * sw}` : undefined;
+  const colorName = ROUTE_COLORS[data.c as keyof typeof ROUTE_COLORS] ?? data.c;
+  const tooltip = `${data.n} — ${colorName}${data.d ? ' (Dotted)' : ''}, ${data.pts.length} waypoints`;
 
   const wps = data.pts.map((p, pi) => (
     <circle
@@ -52,7 +55,7 @@ export default function Route({ data, index, squigglyMode, strokeWidth, onWpDrag
         <polyline points={pts(data.pts)} fill="none" stroke="transparent"
           strokeWidth="4" className="rte-hit" data-ridx={index}
           onClick={(e) => onInsertWaypoint?.(e, index)} />
-        <title>{data.n}</title>
+        <title>{tooltip}</title>
         {wps}
       </g>
     );
@@ -69,7 +72,7 @@ export default function Route({ data, index, squigglyMode, strokeWidth, onWpDrag
       <polyline points={pts(data.pts)} fill="none" stroke="transparent"
         strokeWidth="4" className="rte-hit" data-ridx={index}
         onClick={(e) => onInsertWaypoint?.(e, index)} />
-      <title>{data.n}</title>
+      <title>{tooltip}</title>
       {wps}
     </g>
   );
