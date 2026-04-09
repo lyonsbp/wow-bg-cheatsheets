@@ -1,12 +1,15 @@
 import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode } from 'react';
 import type { AppState, AppAction, BGMap, Battleground } from '../types';
 import BGS_ORIGINAL from '../data/battlegrounds';
-import { saveData, loadData } from '../utils/storage';
+import type { StorageAdapter } from '../services/storage-adapter';
+import { LocalStorageAdapter } from '../services/local-storage-adapter';
 
 const BGS_DEFAULT: BGMap = JSON.parse(JSON.stringify(BGS_ORIGINAL)) as BGMap;
 
+const defaultAdapter: StorageAdapter = new LocalStorageAdapter();
+
 const initialState: AppState = {
-  bgs: loadData(BGS_ORIGINAL),
+  bgs: JSON.parse(JSON.stringify(BGS_ORIGINAL)) as BGMap,
   curBG: 'wsg',
   layers: { gy: true, buf: true, rte: true, obj: true },
   editMode: false,
@@ -14,6 +17,7 @@ const initialState: AppState = {
   zoomScale: 1,
   strokeWidth: 1,
   hiddenItems: new Set<string>(),
+  loading: true,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -233,6 +237,9 @@ function reducer(state: AppState, action: AppAction): AppState {
       };
     }
 
+    case 'INIT_DATA':
+      return { ...state, bgs: action.bgs, loading: false };
+
     default:
       return state;
   }
@@ -245,16 +252,31 @@ interface BGContextValue {
 
 const BattlegroundContext = createContext<BGContextValue | null>(null);
 
-export function BattlegroundProvider({ children }: { children: ReactNode }) {
+export function BattlegroundProvider({
+  children,
+  adapter = defaultAdapter,
+}: {
+  children: ReactNode;
+  adapter?: StorageAdapter;
+}) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const isFirstRender = useRef(true);
+  const adapterRef = useRef(adapter);
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    saveData(state.bgs);
+    adapterRef.current = adapter;
+  }, [adapter]);
+
+  useEffect(() => {
+    adapterRef.current.load(BGS_ORIGINAL).then((bgs) => {
+      dispatch({ type: 'INIT_DATA', bgs });
+      isInitialized.current = true;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialized.current) return;
+    adapterRef.current.save(state.bgs);
   }, [state.bgs]);
 
   return (

@@ -66,6 +66,7 @@ export interface AppState {
   zoomScale: number;
   strokeWidth: number;
   hiddenItems: Set<string>;
+  loading: boolean;
 }
 
 export type AppAction =
@@ -88,7 +89,8 @@ export type AppAction =
   | { type: 'ADD_ROUTE'; bgId: string; route: Route }
   | { type: 'RESET_BG'; bgId: string }
   | { type: 'RESET_ALL' }
-  | { type: 'IMPORT_DATA'; bgId: string; data: Partial<Pick<Battleground, 'graveyards' | 'powerups' | 'routes' | 'objectives' | 'tips'>> };
+  | { type: 'IMPORT_DATA'; bgId: string; data: Partial<Pick<Battleground, 'graveyards' | 'powerups' | 'routes' | 'objectives' | 'tips'>> }
+  | { type: 'INIT_DATA'; bgs: BGMap };
 
 export interface MapPoint {
   x: number;
