@@ -2,11 +2,11 @@ import { createContext, useContext, useReducer, useEffect, useRef, type ReactNod
 import type { AppState, AppAction, BGMap, Battleground } from '../types';
 import BGS_ORIGINAL from '../data/battlegrounds';
 import type { StorageAdapter } from '../services/storage-adapter';
-import { LocalStorageAdapter } from '../services/local-storage-adapter';
+import { DualStorageAdapter } from '../services/dual-storage-adapter';
 
 const BGS_DEFAULT: BGMap = JSON.parse(JSON.stringify(BGS_ORIGINAL)) as BGMap;
 
-const defaultAdapter: StorageAdapter = new LocalStorageAdapter();
+const defaultAdapter: StorageAdapter = new DualStorageAdapter();
 
 const initialState: AppState = {
   bgs: JSON.parse(JSON.stringify(BGS_ORIGINAL)) as BGMap,
@@ -255,9 +255,11 @@ const BattlegroundContext = createContext<BGContextValue | null>(null);
 export function BattlegroundProvider({
   children,
   adapter = defaultAdapter,
+  userId,
 }: {
   children: ReactNode;
   adapter?: StorageAdapter;
+  userId?: string;
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const adapterRef = useRef(adapter);
@@ -268,11 +270,12 @@ export function BattlegroundProvider({
   }, [adapter]);
 
   useEffect(() => {
+    isInitialized.current = false;
     adapterRef.current.load(BGS_ORIGINAL).then((bgs) => {
       dispatch({ type: 'INIT_DATA', bgs });
       isInitialized.current = true;
     });
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (!isInitialized.current) return;
