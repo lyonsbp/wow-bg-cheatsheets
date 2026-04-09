@@ -1,5 +1,6 @@
 import { saveData, loadData } from './storage';
 import type { BGMap } from '../types';
+import { ROUTE_YELLOW } from './constants';
 
 const makeBgs = (): BGMap => ({
   test: {
@@ -8,7 +9,7 @@ const makeBgs = (): BGMap => ({
     tips: ['tip1'],
     graveyards: [{ n: 'GY1', x: 10, y: 20, f: 'alliance' }],
     powerups: [{ n: 'Speed', x: 30, y: 40, t: 'speed' }],
-    routes: [{ n: 'Route1', pts: [[0, 0], [50, 50]], c: '#ffd700' }],
+    routes: [{ n: 'Route1', pts: [[0, 0], [50, 50]], c: ROUTE_YELLOW }],
     objectives: [{ n: 'Node1', x: 50, y: 50, t: 'node' }],
   },
 });

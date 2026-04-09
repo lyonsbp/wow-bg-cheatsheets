@@ -1,8 +1,17 @@
 import { useBG } from '../context/BattlegroundContext';
 import type { Battleground } from '../types';
+import {
+  ROUTE_COLORS,
+  ALLIANCE_BLUE, HORDE_RED, NEUTRAL_GRAY,
+  SPEED_CYAN, BERSERK_ORANGE, RESTORE_GREEN,
+} from '../utils/constants';
 
 const rowBase = "flex items-center gap-1.5 mb-[5px] text-[var(--text-secondary)] cursor-pointer select-none transition-opacity duration-150";
 const groupHeader = "text-xs text-[var(--text-muted)] uppercase tracking-wide mt-2 mb-1 cursor-pointer select-none flex items-center gap-1 hover:text-[var(--accent-gold)] transition-colors duration-150";
+const subGroupHeader = "text-xs text-[var(--text-muted)] uppercase tracking-wide mt-1 mb-0.5 pl-2 cursor-pointer select-none flex items-center gap-1 hover:text-[var(--accent-gold)] transition-colors duration-150";
+
+const GY_COLORS: Record<string, string> = { alliance: ALLIANCE_BLUE, horde: HORDE_RED, neutral: NEUTRAL_GRAY };
+const BUF_COLORS: Record<string, string> = { speed: SPEED_CYAN, berserk: BERSERK_ORANGE, restore: RESTORE_GREEN };
 
 function Legend({ bg }: { bg: Battleground }) {
   const { state, dispatch } = useBG();
@@ -20,7 +29,7 @@ function Legend({ bg }: { bg: Battleground }) {
 
   return (
     <div className="mt-3 font-medium">
-      <div className="font-semibold text-lg text-[var(--text-muted)] uppercase tracking-wide mb-1.5 pb-[3px] border-b border-[var(--border-default)]">Legend</div>
+      <div className="font-semibold text-lg text-[var(--accent-gold)] uppercase tracking-wide mb-1.5 pb-[3px] border-b border-[var(--border-default)]">Legend</div>
 
       {bg.graveyards.length > 0 && (
         <>
@@ -31,7 +40,7 @@ function Legend({ bg }: { bg: Battleground }) {
             const key = `gy-${i}`;
             return (
               <div key={key} className={`${rowBase} pl-2 ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
-                <div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: g.f === 'alliance' ? '#4488cc' : g.f === 'horde' ? '#cc3344' : '#7a8898' }}></div>
+                <div className="w-[9px] h-[9px] rounded-full shrink-0" style={{ background: GY_COLORS[g.f] ?? NEUTRAL_GRAY }}></div>
                 {g.n}
               </div>
             );
@@ -48,7 +57,7 @@ function Legend({ bg }: { bg: Battleground }) {
             const key = `buf-${i}`;
             return (
               <div key={key} className={`${rowBase} pl-2 ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
-                <div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: p.t === 'speed' ? '#00e5ff' : p.t === 'berserk' ? '#ff6600' : '#44dd88' }}></div>
+                <div className="w-[9px] h-[9px] rotate-45 shrink-0" style={{ background: BUF_COLORS[p.t] ?? RESTORE_GREEN }}></div>
                 {p.n}
               </div>
             );
@@ -73,29 +82,66 @@ function Legend({ bg }: { bg: Battleground }) {
         </>
       )}
 
-      {bg.routes.length > 0 && (
-        <>
-          <div className={`${groupHeader} ${isGroupHidden(rteKeys) ? 'opacity-40' : ''}`} onClick={() => toggleGroup(rteKeys)}>
-            <span className="text-xs">{isGroupHidden(rteKeys) ? '▶' : '▼'}</span> Routes
-          </div>
-          {bg.routes.map((r, i) => {
-            const key = `rte-${i}`;
-            return (
-              <div key={key} className={`${rowBase} pl-2 ${isHidden(key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(key)}>
-                <div
-                  className="w-[18px] h-[3px] shrink-0 rounded-sm"
-                  style={{
-                    background: r.d ? 'transparent' : r.c,
-                    borderBottom: r.d ? `2px dashed ${r.c}` : undefined,
-                    height: r.d ? 0 : undefined,
-                  }}
-                ></div>
-                {r.n}
-              </div>
-            );
-          })}
-        </>
-      )}
+      {bg.routes.length > 0 && (() => {
+        const colorGroups: { color: string; name: string; items: { idx: number; key: string }[] }[] = [];
+        const colorMap = new Map<string, typeof colorGroups[number]>();
+        bg.routes.forEach((r, i) => {
+          let g = colorMap.get(r.c);
+          if (!g) {
+            g = { color: r.c, name: ROUTE_COLORS[r.c as keyof typeof ROUTE_COLORS] ?? r.c, items: [] };
+            colorMap.set(r.c, g);
+            colorGroups.push(g);
+          }
+          g.items.push({ idx: i, key: `rte-${i}` });
+        });
+
+        const routeSwatch = (r: typeof bg.routes[number]) => (
+          <div className="w-[18px] h-[3px] shrink-0 rounded-sm" style={{
+            background: r.d ? 'transparent' : r.c,
+            borderBottom: r.d ? `2px dashed ${r.c}` : undefined,
+            height: r.d ? 0 : undefined,
+          }}></div>
+        );
+
+        return (
+          <>
+            <div className={`${groupHeader} ${isGroupHidden(rteKeys) ? 'opacity-40' : ''}`} onClick={() => toggleGroup(rteKeys)}>
+              <span className="text-xs">{isGroupHidden(rteKeys) ? '▶' : '▼'}</span> Routes
+            </div>
+            {colorGroups.map(cg => {
+              const cgKeys = cg.items.map(it => it.key);
+
+              if (cg.items.length === 1) {
+                const it = cg.items[0]!;
+                const r = bg.routes[it.idx]!;
+                return (
+                  <div key={it.key} className={`${rowBase} pl-2 ${isHidden(it.key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(it.key)}>
+                    {routeSwatch(r)} {r.n}
+                  </div>
+                );
+              }
+
+              return (
+                <div key={cg.color}>
+                  <div className={`${subGroupHeader} ${isGroupHidden(cgKeys) ? 'opacity-40' : ''}`} onClick={() => toggleGroup(cgKeys)}>
+                    <span className="text-xs">{isGroupHidden(cgKeys) ? '▶' : '▼'}</span>
+                    <div className="w-2.5 h-0.5 rounded-sm shrink-0" style={{ background: cg.color }}></div>
+                    {cg.name}
+                  </div>
+                  {cg.items.map(it => {
+                    const r = bg.routes[it.idx]!;
+                    return (
+                      <div key={it.key} className={`${rowBase} pl-4 ${isHidden(it.key) ? 'opacity-30 line-through' : ''}`} onClick={() => toggle(it.key)}>
+                        {routeSwatch(r)} {r.n}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </>
+        );
+      })()}
     </div>
   );
 }

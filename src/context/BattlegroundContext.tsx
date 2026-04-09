@@ -216,6 +216,9 @@ function reducer(state: AppState, action: AppAction): AppState {
       };
     }
 
+    case 'RESET_ALL':
+      return { ...state, bgs: JSON.parse(JSON.stringify(BGS_DEFAULT)) as BGMap };
+
     case 'IMPORT_DATA': {
       const { bgId, data } = action;
       const bg = { ...state.bgs[bgId]! };

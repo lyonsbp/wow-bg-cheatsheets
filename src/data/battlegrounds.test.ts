@@ -1,4 +1,5 @@
 import BGS from './battlegrounds';
+import { ROUTE_COLORS } from '../utils/constants';
 
 describe('battlegrounds data', () => {
   it('contains 13 battlegrounds', () => {
@@ -53,7 +54,7 @@ describe('battlegrounds data', () => {
   });
 
   it('route colors use the approved palette (no red/blue)', () => {
-    const allowed = new Set(['#ff9933', '#ffd700', '#44cc44', '#00cccc', '#cc66ff', '#ff66aa']);
+    const allowed = new Set(Object.keys(ROUTE_COLORS));
     for (const [id, bg] of Object.entries(BGS)) {
       for (const r of bg.routes) {
         expect(allowed.has(r.c), `${id} route "${r.n}" has unapproved color ${r.c}`).toBe(true);

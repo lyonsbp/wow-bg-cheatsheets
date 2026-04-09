@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useBG } from '../context/BattlegroundContext';
 import type { MapPoint, Faction, PowerupType } from '../types';
+import { ROUTE_ORANGE, ROUTE_YELLOW, ROUTE_GREEN, ROUTE_CYAN, ROUTE_PURPLE, ROUTE_PINK } from '../utils/constants';
 
 interface Props {
   position: { x: number; y: number };
@@ -41,18 +42,18 @@ const SUBMENUS: Record<SubMenuType, SubMenu> = {
   rte: {
     title: 'Route Style',
     items: [
-      { key: 'rte-#ff9933', label: '● Orange' },
-      { key: 'rte-#ffd700', label: '● Yellow' },
-      { key: 'rte-#44cc44', label: '● Green' },
-      { key: 'rte-#00cccc', label: '● Cyan' },
-      { key: 'rte-#cc66ff', label: '● Purple' },
-      { key: 'rte-#ff66aa', label: '● Pink' },
-      { key: 'rte-#ff9933-d', label: '◌ Orange (Dotted)' },
-      { key: 'rte-#ffd700-d', label: '◌ Yellow (Dotted)' },
-      { key: 'rte-#44cc44-d', label: '◌ Green (Dotted)' },
-      { key: 'rte-#00cccc-d', label: '◌ Cyan (Dotted)' },
-      { key: 'rte-#cc66ff-d', label: '◌ Purple (Dotted)' },
-      { key: 'rte-#ff66aa-d', label: '◌ Pink (Dotted)' },
+      { key: `rte-${ROUTE_ORANGE}`, label: '● Orange' },
+      { key: `rte-${ROUTE_YELLOW}`, label: '● Yellow' },
+      { key: `rte-${ROUTE_GREEN}`, label: '● Green' },
+      { key: `rte-${ROUTE_CYAN}`, label: '● Cyan' },
+      { key: `rte-${ROUTE_PURPLE}`, label: '● Purple' },
+      { key: `rte-${ROUTE_PINK}`, label: '● Pink' },
+      { key: `rte-${ROUTE_ORANGE}-d`, label: '◌ Orange (Dotted)' },
+      { key: `rte-${ROUTE_YELLOW}-d`, label: '◌ Yellow (Dotted)' },
+      { key: `rte-${ROUTE_GREEN}-d`, label: '◌ Green (Dotted)' },
+      { key: `rte-${ROUTE_CYAN}-d`, label: '◌ Cyan (Dotted)' },
+      { key: `rte-${ROUTE_PURPLE}-d`, label: '◌ Purple (Dotted)' },
+      { key: `rte-${ROUTE_PINK}-d`, label: '◌ Pink (Dotted)' },
     ]
   },
   obj: {

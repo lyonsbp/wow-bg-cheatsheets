@@ -87,6 +87,7 @@ export type AppAction =
   | { type: 'ADD_MARKER'; bgId: string; layer: 'graveyards' | 'powerups' | 'objectives'; marker: Graveyard | Powerup | Objective }
   | { type: 'ADD_ROUTE'; bgId: string; route: Route }
   | { type: 'RESET_BG'; bgId: string }
+  | { type: 'RESET_ALL' }
   | { type: 'IMPORT_DATA'; bgId: string; data: Partial<Pick<Battleground, 'graveyards' | 'powerups' | 'routes' | 'objectives' | 'tips'>> };
 
 export interface MapPoint {

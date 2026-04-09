@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
+import { ROUTE_ORANGE } from '../utils/constants';
 import { BattlegroundProvider, useBG } from './BattlegroundContext';
 import type { ReactNode } from 'react';
 
@@ -183,10 +184,10 @@ describe('BattlegroundContext', () => {
     const { result } = renderHook(() => useBG(), { wrapper });
     act(() => result.current.dispatch({
       type: 'ADD_ROUTE', bgId: 'wsg',
-      route: { n: 'Dotted Route', pts: [[10, 10], [90, 90]], c: '#ff9933', d: true },
+      route: { n: 'Dotted Route', pts: [[10, 10], [90, 90]], c: ROUTE_ORANGE, d: true },
     }));
     const routes = result.current.state.bgs['wsg']!.routes;
     expect(routes.at(-1)!.d).toBe(true);
-    expect(routes.at(-1)!.c).toBe('#ff9933');
+    expect(routes.at(-1)!.c).toBe(ROUTE_ORANGE);
   });
 });
