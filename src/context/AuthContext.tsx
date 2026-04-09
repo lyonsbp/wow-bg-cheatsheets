@@ -8,6 +8,8 @@ interface SignUpResult {
   pendingPassword?: string;
 }
 
+type OAuthProvider = 'google' | 'github';
+
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
@@ -15,6 +17,7 @@ interface AuthContextValue {
   loading: boolean;
   signUp: (email: string, password: string) => Promise<SignUpResult>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signInWithOAuth: (provider: OAuthProvider) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   setPassword: (password: string) => Promise<{ error: Error | null }>;
 }
@@ -72,6 +75,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
+  const signInWithOAuth = async (provider: OAuthProvider) => {
+    if (isAnonymous) {
+      const { error } = await supabase.auth.linkIdentity({
+        provider,
+        options: { redirectTo: window.location.origin },
+      });
+      return { error };
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin },
+    });
+    return { error };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     // Create a new anonymous session after sign out
@@ -83,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAnonymous = user?.is_anonymous ?? true;
 
   return (
-    <AuthContext.Provider value={{ user, session, isAnonymous, loading, signUp, signIn, signOut, setPassword }}>
+    <AuthContext.Provider value={{ user, session, isAnonymous, loading, signUp, signIn, signInWithOAuth, signOut, setPassword }}>
       {children}
     </AuthContext.Provider>
   );
