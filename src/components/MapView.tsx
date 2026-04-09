@@ -34,7 +34,6 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
     setAddDlg(null);
   }, [curBG]);
 
-  // Wheel zoom
   useEffect(() => {
     const wrap = mapWrapRef.current;
     if (!wrap) return;
@@ -50,7 +49,6 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
     return () => wrap.removeEventListener('wheel', handler);
   }, [zoomScale, dispatch]);
 
-  // Pan handlers
   const handlePanStart = useCallback((e: React.MouseEvent) => {
     if (zoomScale <= 1) return;
     if (editMode && ((e.target as Element).closest('.mk') || (e.target as Element).closest('.rte-wp') || (e.target as Element).closest('.rte-hit'))) return;
@@ -64,7 +62,7 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
       x: e.clientX, y: e.clientY,
       sx: wrap.scrollLeft, sy: wrap.scrollTop,
     };
-    wrap.classList.add('panning');
+    wrap.classList.add('cursor-grabbing');
     e.preventDefault();
   }, [zoomScale, editMode]);
 
@@ -83,7 +81,7 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
     const onUp = () => {
       if (!isPanningRef.current) return;
       isPanningRef.current = false;
-      mapWrapRef.current?.classList.remove('panning');
+      mapWrapRef.current?.classList.remove('cursor-grabbing');
       setTimeout(() => { wasPanningRef.current = false; }, 0);
     };
     document.addEventListener('mousemove', onMove);
@@ -102,16 +100,16 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
   if (!bg) return null;
 
   return (
-    <div className="content" style={{ position: 'relative' }}>
+    <div className="flex-1 flex overflow-hidden min-h-0 relative">
       <button
-        className="panel-tog left"
+        className="absolute top-1/2 left-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] text-[.8rem] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-r -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
         onClick={onToggleSidebar}
         title="Toggle sidebar"
       >
         {sidebarVisible ? '◀' : '▶'}
       </button>
       <button
-        className="panel-tog right"
+        className="absolute top-1/2 right-0 z-[60] w-5 h-11 bg-[var(--bg-panel)] border border-[var(--border-default)] text-[var(--text-muted)] text-[.8rem] cursor-pointer flex items-center justify-center transition-all duration-150 rounded-l -translate-y-1/2 hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent-gold)] hover:border-[var(--border-accent)]"
         onClick={onToggleTips}
         title="Toggle tips"
       >
@@ -120,17 +118,17 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
 
       <div
         ref={mapWrapRef}
-        className={`map-wrap${zoomScale > 1 ? ' pannable' : ''}`}
+        className={`flex-1 flex items-center justify-center p-3.5 overflow-auto bg-[var(--map-bg)] min-w-0 relative${zoomScale > 1 ? ' cursor-grab' : ''}`}
         onMouseDown={handlePanStart}
       >
         <ZoomControls />
         <div
-          className={`map-box${editMode ? ' edit-active' : ''}`}
+          className={`relative inline-block leading-none origin-center transition-transform duration-150 ease-out${editMode ? ' edit-active' : ''}`}
           style={{ transform: `scale(${zoomScale})` }}
         >
           {bg.map ? (
             <img
-              className="map-img"
+              className="block max-w-full max-h-[calc(100vh-160px)] border-2 border-[var(--map-border)] rounded"
               src={bg.map}
               alt={bg.name + ' map'}
               style={{ display: mapLoaded ? 'block' : 'none' }}
@@ -140,16 +138,16 @@ export default function MapView({ sidebarVisible, tipsVisible, onToggleSidebar, 
           ) : null}
 
           {(!bg.map || mapError) && (
-            <div className="map-ph" style={{ display: 'flex' }}>
-              <div className="ph-name">{bg.name}</div>
-              <div className="ph-note">Map image unavailable &mdash; check warcraft.wiki.gg</div>
+            <div className="w-[580px] h-[460px] max-w-full border-2 border-dashed border-[var(--border-default)] rounded flex flex-col items-center justify-center gap-2.5 text-[var(--text-muted)]" style={{ background: 'var(--map-ph-bg)' }}>
+              <div className="text-[1.1rem] text-[var(--text-secondary)] font-semibold">{bg.name}</div>
+              <div className="text-[.8rem] text-[var(--text-muted)]">Map image unavailable &mdash; check warcraft.wiki.gg</div>
             </div>
           )}
 
           {bg.map && !mapLoaded && !mapError && (
-            <div className="map-ph" style={{ display: 'flex' }}>
-              <div className="ph-name">{bg.name}</div>
-              <div className="ph-note">Loading map...</div>
+            <div className="w-[580px] h-[460px] max-w-full border-2 border-dashed border-[var(--border-default)] rounded flex flex-col items-center justify-center gap-2.5 text-[var(--text-muted)]" style={{ background: 'var(--map-ph-bg)' }}>
+              <div className="text-[1.1rem] text-[var(--text-secondary)] font-semibold">{bg.name}</div>
+              <div className="text-[.8rem] text-[var(--text-muted)]">Loading map...</div>
             </div>
           )}
 

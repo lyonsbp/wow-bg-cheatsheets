@@ -13,11 +13,11 @@ export default function ZoomControls() {
   const zoomReset = () => dispatch({ type: 'SET_ZOOM', scale: 1 });
 
   return (
-    <div className="zoom-bar">
-      <button className="zbtn" onClick={zoomIn} title="Zoom in">+</button>
-      <div className="zoom-level">{Math.round(zoomScale * 100)}%</div>
-      <button className="zbtn" onClick={zoomOut} title="Zoom out">−</button>
-      <button className="zbtn" onClick={zoomReset} title="Reset zoom" style={{ fontSize: '.65rem', marginTop: '2px' }}>1:1</button>
+    <div className="absolute bottom-3 right-3 z-50 flex flex-col gap-1">
+      <button className="w-8 h-8 rounded border border-[var(--border-default)] bg-[var(--bg-panel)] text-[var(--text-primary)] text-base cursor-pointer flex items-center justify-center transition-all duration-[120ms] leading-none opacity-90 hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)] hover:text-[var(--accent-gold)]" onClick={zoomIn} title="Zoom in">+</button>
+      <div className="text-[.75rem] text-[var(--text-muted)] text-center py-0.5 pointer-events-none select-none">{Math.round(zoomScale * 100)}%</div>
+      <button className="w-8 h-8 rounded border border-[var(--border-default)] bg-[var(--bg-panel)] text-[var(--text-primary)] text-base cursor-pointer flex items-center justify-center transition-all duration-[120ms] leading-none opacity-90 hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)] hover:text-[var(--accent-gold)]" onClick={zoomOut} title="Zoom out">−</button>
+      <button className="w-8 h-8 rounded border border-[var(--border-default)] bg-[var(--bg-panel)] text-[var(--text-primary)] text-[.65rem] cursor-pointer flex items-center justify-center transition-all duration-[120ms] leading-none opacity-90 mt-0.5 hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)] hover:text-[var(--accent-gold)]" onClick={zoomReset} title="Reset zoom">1:1</button>
     </div>
   );
 }

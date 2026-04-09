@@ -16,8 +16,10 @@ describe('App', () => {
 
   it('starts with Warsong Gulch selected', () => {
     render(<App />);
-    expect(screen.getByText('Warsong Gulch', { selector: '.bg-title' })).toBeInTheDocument();
-    expect(screen.getByText(/Capture the Flag/, { selector: '.bg-badge' })).toBeInTheDocument();
+    // BG title + badge both present (multiple elements match the name, so use getAllBy)
+    const wsgElements = screen.getAllByText('Warsong Gulch');
+    expect(wsgElements.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/Capture the Flag · 10v10/)).toBeInTheDocument();
   });
 
   it('switches BG when sidebar button is clicked', async () => {
@@ -48,10 +50,10 @@ describe('App', () => {
     expect(screen.getByText('Legend')).toBeInTheDocument();
     expect(screen.getByText('Alliance Graveyard')).toBeInTheDocument();
     expect(screen.getByText('Horde Graveyard')).toBeInTheDocument();
-    // WSG route names should appear in legend (use selector to avoid SVG title matches)
-    expect(screen.getByText('Tunnel (Center)', { selector: '.leg-row' })).toBeInTheDocument();
-    expect(screen.getByText('Upper Field (Ramp)', { selector: '.leg-row' })).toBeInTheDocument();
-    expect(screen.getByText('GY Side (Lower)', { selector: '.leg-row' })).toBeInTheDocument();
+    // WSG route names should appear in legend (use getAllBy since SVG titles also match)
+    expect(screen.getAllByText('Tunnel (Center)').length).toBeGreaterThanOrEqual(2); // SVG title + legend
+    expect(screen.getAllByText('Upper Field (Ramp)').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText('GY Side (Lower)').length).toBeGreaterThanOrEqual(2);
   });
 
   it('renders stroke width slider', () => {
@@ -76,5 +78,15 @@ describe('App', () => {
     expect(screen.getByText('Export JSON')).toBeInTheDocument();
     expect(screen.getByText('Import JSON')).toBeInTheDocument();
     expect(screen.getByText('Reset to Default')).toBeInTheDocument();
+  });
+
+  it('renders theme toggle and switches modes', async () => {
+    render(<App />);
+    const toggle = screen.getByTitle('Toggle theme');
+    expect(toggle).toBeInTheDocument();
+    expect(screen.getByText('Light')).toBeInTheDocument();
+    await userEvent.click(toggle);
+    expect(screen.getByText('Dark')).toBeInTheDocument();
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 });

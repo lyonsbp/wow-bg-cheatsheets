@@ -100,7 +100,7 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
     const bgId = state.curBG;
 
     if (type === 'rte') {
-      const rteParts = key.substring(4); // e.g. "#ff9933" or "#ff9933-d"
+      const rteParts = key.substring(4);
       const dotted = rteParts.endsWith('-d');
       const color = dotted ? rteParts.slice(0, -2) : rteParts;
       const name = prompt('Route name:', 'New Route');
@@ -127,29 +127,32 @@ export default function AddDialog({ position, mapPoint, onClose }: Props) {
     onClose();
   };
 
+  const btnClass = "block w-full py-1.5 px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-primary)] text-[.8rem] cursor-pointer text-left mb-[3px] transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-accent)]";
+  const subClass = "block w-full py-[5px] px-2.5 bg-transparent border border-[var(--border-default)] rounded text-[var(--text-secondary)] text-[.8rem] cursor-pointer text-left mb-0.5 transition-all duration-[120ms] hover:bg-[var(--bg-surface-hover)] hover:border-[var(--border-strong)]";
+
   return createPortal(
     <div
       ref={dlgRef}
-      className="add-dlg"
-      style={{ left: position.x, top: position.y, position: 'fixed' }}
+      className="fixed z-[100] bg-[var(--dlg-bg)] border border-[var(--dlg-border)] rounded-md p-2 min-w-[160px] shadow-[0_4px_20px_#0004]"
+      style={{ left: position.x, top: position.y }}
     >
       {submenu ? (
         <>
-          <div className="add-dlg-title">{SUBMENUS[submenu].title}</div>
+          <div className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">{SUBMENUS[submenu].title}</div>
           {SUBMENUS[submenu].items.map(item => (
-            <button key={item.key} className="add-dlg-sub" onClick={() => addMarker(item.key)}>
+            <button key={item.key} className={subClass} onClick={() => addMarker(item.key)}>
               {item.label}
             </button>
           ))}
-          <button className="add-dlg-sub add-dlg-back" onClick={() => setSubmenu(null)}>← Back</button>
+          <button className={`${subClass} text-[#6699cc] border-[#3a5a8a] hover:bg-[#0f1e3544]`} onClick={() => setSubmenu(null)}>← Back</button>
         </>
       ) : (
         <>
-          <div className="add-dlg-title">Add Marker at ({Math.round(mapPoint.x)}, {Math.round(mapPoint.y)})</div>
-          <button className="add-dlg-btn" onClick={() => setSubmenu('gy')}>☩ Graveyard</button>
-          <button className="add-dlg-btn" onClick={() => setSubmenu('buf')}>◆ Power-up</button>
-          <button className="add-dlg-btn" onClick={() => setSubmenu('obj')}>★ Objective</button>
-          <button className="add-dlg-btn" onClick={() => setSubmenu('rte')}>⟶ Route</button>
+          <div className="text-[.75rem] text-[var(--text-muted)] uppercase tracking-[.5px] mb-1.5">Add Marker at ({Math.round(mapPoint.x)}, {Math.round(mapPoint.y)})</div>
+          <button className={btnClass} onClick={() => setSubmenu('gy')}>☩ Graveyard</button>
+          <button className={btnClass} onClick={() => setSubmenu('buf')}>◆ Power-up</button>
+          <button className={btnClass} onClick={() => setSubmenu('obj')}>★ Objective</button>
+          <button className={btnClass} onClick={() => setSubmenu('rte')}>⟶ Route</button>
         </>
       )}
     </div>,
